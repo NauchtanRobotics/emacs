@@ -3,6 +3,13 @@
 (or (server-running-p)
     (server-start))
 
+;; Default directory for custom themes.
+(setq custom-theme-directory (concat dotfiles-dir "/themes"))
+
+;; Default font and theme.
+(set-default-font "Consolas 8")
+(load-theme 'zenburn)
+
 ;; Scroll margin and stop-that-bloody-halfpage-jump
 (setq scroll-margin 3)
 (setq scroll-step 1)
