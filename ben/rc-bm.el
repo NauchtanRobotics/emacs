@@ -1,6 +1,5 @@
 ;; BM -- Visible Bookmarks
 
-(require 'bm)
 (setq bm-highlight-style 'bm-highlight-only-fringe)
 
 (global-set-key (kbd "<C-f2>") 'bm-toggle)
