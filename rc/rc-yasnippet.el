@@ -2,7 +2,7 @@
 
 (require 'yasnippet)
 
-(setq yas/root-directory (concat dotfiles-dir "ben/data/snippets"))
+(setq yas/root-directory (concat dotfiles-dir "rc/data/snippets"))
  (yas/load-directory yas/root-directory)
 
 ; Open all files with the .yasnippet extension in snippet mode

@@ -1,6 +1,6 @@
 (setq brd-dropbox-dir "/mnt/dropbox")
 
-(add-to-list 'load-path (concat dotfiles-dir "ben"))
+(add-to-list 'load-path (concat dotfiles-dir "rc"))
 
-(load (concat dotfiles-dir "ben/ben.el"))
-(mapc #'load (directory-files (concat dotfiles-dir "ben") nil ".el$"))
+(load (concat dotfiles-dir "rc/rc.el"))
+(mapc #'load (directory-files (concat dotfiles-dir "rc") nil ".el$"))
