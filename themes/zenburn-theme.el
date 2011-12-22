@@ -84,7 +84,7 @@
   (custom-theme-set-faces
    'zenburn
    '(button ((t (:underline t))))
-   `(link ((,class (:foreground ,zenburn-yellow :underline t :weight bold))))
+   `(link ((,class (:foreground ,zenburn-yellow :underline t :weight normal))))
    `(link-visited ((,class (:foreground ,zenburn-yellow-2 :underline t :weight normal))))
 
    ;;; basic coloring
@@ -100,7 +100,7 @@
    ;;; compilation
    `(compilation-column-face ((,class (:foreground ,zenburn-yellow))))
    `(compilation-enter-directory-face ((,class (:foreground ,zenburn-green))))
-   `(compilation-error-face ((,class (:foreground ,zenburn-red-1 :weight bold :underline t))))
+   `(compilation-error-face ((,class (:foreground ,zenburn-red-1 :weight normal :underline t))))
    `(compilation-face ((,class (:foreground ,zenburn-fg))))
    `(compilation-info-face ((,class (:foreground ,zenburn-blue))))
    `(compilation-info ((,class (:foreground ,zenburn-green+4 :underline t))))
@@ -108,14 +108,14 @@
    `(compilation-line-face ((,class (:foreground ,zenburn-yellow))))
    `(compilation-line-number ((,class (:foreground ,zenburn-yellow))))
    `(compilation-message-face ((,class (:foreground ,zenburn-blue))))
-   `(compilation-warning-face ((,class (:foreground ,zenburn-yellow-1 :weight bold :underline t))))
+   `(compilation-warning-face ((,class (:foreground ,zenburn-yellow-1 :weight normal :underline t))))
 
    ;;; grep
    `(grep-context-face ((,class (:foreground ,zenburn-fg))))
-   `(grep-error-face ((,class (:foreground ,zenburn-red-1 :weight bold :underline t))))
+   `(grep-error-face ((,class (:foreground ,zenburn-red-1 :weight normal :underline t))))
    `(grep-hit-face ((,class (:foreground ,zenburn-blue))))
-   `(grep-match-face ((,class (:foreground ,zenburn-orange :weight bold))))
-   `(match ((,class (:background ,zenburn-bg-1 :foreground ,zenburn-orange :weight bold))))
+   `(grep-match-face ((,class (:foreground ,zenburn-orange :weight normal))))
+   `(match ((,class (:background ,zenburn-bg-1 :foreground ,zenburn-orange :weight normal))))
 
    ;; faces used by isearch
    `(isearch ((,class (:foreground ,zenburn-yellow :background ,zenburn-bg-1))))
@@ -128,7 +128,7 @@
      ((,class (:foreground ,zenburn-green+1
                            :background ,zenburn-bg-1
                            :box (:line-width -1 :style released-button)))))
-   `(mode-line-buffer-id ((,class (:foreground ,zenburn-yellow :weight bold))))
+   `(mode-line-buffer-id ((,class (:foreground ,zenburn-yellow :weight normal))))
    `(mode-line-inactive
      ((,class (:foreground ,zenburn-green-1
                            :background ,zenburn-bg-05
@@ -146,13 +146,13 @@
    `(font-lock-doc-face ((,class (:foreground ,zenburn-green+1))))
    `(font-lock-doc-string-face ((,class (:foreground ,zenburn-blue+1))))
    `(font-lock-function-name-face ((,class (:foreground ,zenburn-blue))))
-   `(font-lock-keyword-face ((,class (:foreground ,zenburn-yellow :weight bold))))
+   `(font-lock-keyword-face ((,class (:foreground ,zenburn-yellow :weight normal))))
    `(font-lock-negation-char-face ((,class (:foreground ,zenburn-fg))))
    `(font-lock-preprocessor-face ((,class (:foreground ,zenburn-blue))))
    `(font-lock-string-face ((,class (:foreground ,zenburn-red))))
    `(font-lock-type-face ((,class (:foreground ,zenburn-blue))))
    `(font-lock-variable-name-face ((,class (:foreground ,zenburn-orange))))
-   `(font-lock-warning-face ((,class (:foreground ,zenburn-yellow-1 :weight bold :underline t))))
+   `(font-lock-warning-face ((,class (:foreground ,zenburn-yellow-1 :weight normal :underline t))))
 
    `(c-annotation-face ((,class (:inherit font-lock-constant-face))))
 
@@ -164,33 +164,33 @@
    `(diff-removed ((,class (:foreground ,zenburn-red))))
    `(diff-header ((,class (:background ,zenburn-bg+1))))
    `(diff-file-header
-     ((,class (:background ,zenburn-bg+2 :foreground ,zenburn-fg :bold t))))
+     ((,class (:background ,zenburn-bg+2 :foreground ,zenburn-fg :normal t))))
 
    ;; eshell
-   `(eshell-prompt ((,class (:foreground ,zenburn-yellow :weight bold))))
-   `(eshell-ls-archive ((,class (:foreground ,zenburn-red-1 :weight bold))))
+   `(eshell-prompt ((,class (:foreground ,zenburn-yellow :weight normal))))
+   `(eshell-ls-archive ((,class (:foreground ,zenburn-red-1 :weight normal))))
    `(eshell-ls-backup ((,class (:inherit font-lock-comment))))
    `(eshell-ls-clutter ((,class (:inherit font-lock-comment))))
-   `(eshell-ls-directory ((,class (:foreground ,zenburn-blue+1 :weight bold))))
-   `(eshell-ls-executable ((,class (:foreground ,zenburn-red+1 :weight bold))))
+   `(eshell-ls-directory ((,class (:foreground ,zenburn-blue+1 :weight normal))))
+   `(eshell-ls-executable ((,class (:foreground ,zenburn-red+1 :weight normal))))
    `(eshell-ls-unreadable ((,class (:foreground ,zenburn-fg))))
    `(eshell-ls-missing ((,class (:inherit font-lock-warning))))
    `(eshell-ls-product ((,class (:inherit font-lock-doc))))
-   `(eshell-ls-special ((,class (:foreground ,zenburn-yellow :weight bold))))
-   `(eshell-ls-symlink ((,class (:foreground ,zenburn-cyan :weight bold))))
+   `(eshell-ls-special ((,class (:foreground ,zenburn-yellow :weight normal))))
+   `(eshell-ls-symlink ((,class (:foreground ,zenburn-cyan :weight normal))))
 
    ;; flymake
-   `(flymake-errline ((,class (:foreground ,zenburn-red-1 :weight bold :underline t))))
-   `(flymake-warnline ((,class (:foreground ,zenburn-yellow-1 :weight bold :underline t))))
+   `(flymake-errline ((,class (:foreground ,zenburn-red-1 :weight normal :underline t))))
+   `(flymake-warnline ((,class (:foreground ,zenburn-yellow-1 :weight normal :underline t))))
 
    ;; flyspell
-   `(flyspell-duplicate ((,class (:foreground ,zenburn-yellow-1 :weight bold :underline t))))
-   `(flyspell-incorrect ((,class (:foreground ,zenburn-red-1 :weight bold :underline t))))
+   `(flyspell-duplicate ((,class (:foreground ,zenburn-yellow-1 :weight normal :underline t))))
+   `(flyspell-incorrect ((,class (:foreground ,zenburn-red-1 :weight normal :underline t))))
 
    ;; erc
    `(erc-action-face ((,class (:inherit erc-default-face))))
-   `(erc-bold-face ((,class (:weight bold))))
-   `(erc-current-nick-face ((,class (:foreground ,zenburn-blue :weight bold))))
+   `(erc-normal-face ((,class (:weight normal))))
+   `(erc-current-nick-face ((,class (:foreground ,zenburn-blue :weight normal))))
    `(erc-dangerous-host-face ((,class (:inherit font-lock-warning))))
    `(erc-default-face ((,class (:foreground ,zenburn-fg))))
    `(erc-direct-msg-face ((,class (:inherit erc-default))))
@@ -198,38 +198,38 @@
    `(erc-fool-face ((,class (:inherit erc-default))))
    `(erc-highlight-face ((,class (:inherit hover-highlight))))
    `(erc-input-face ((,class (:foreground ,zenburn-yellow))))
-   `(erc-keyword-face ((,class (:foreground ,zenburn-blue :weight bold))))
-   `(erc-nick-default-face ((,class (:foreground ,zenburn-yellow :weight bold))))
-   `(erc-my-nick-face ((,class (:foreground ,zenburn-red :weigth bold))))
+   `(erc-keyword-face ((,class (:foreground ,zenburn-blue :weight normal))))
+   `(erc-nick-default-face ((,class (:foreground ,zenburn-yellow :weight normal))))
+   `(erc-my-nick-face ((,class (:foreground ,zenburn-red :weigth normal))))
    `(erc-nick-msg-face ((,class (:inherit erc-default))))
    `(erc-notice-face ((,class (:foreground ,zenburn-green))))
-   `(erc-pal-face ((,class (:foreground ,zenburn-orange :weight bold))))
-   `(erc-prompt-face ((,class (:foreground ,zenburn-orange :background ,zenburn-bg :weight bold))))
+   `(erc-pal-face ((,class (:foreground ,zenburn-orange :weight normal))))
+   `(erc-prompt-face ((,class (:foreground ,zenburn-orange :background ,zenburn-bg :weight normal))))
    `(erc-timestamp-face ((,class (:foreground ,zenburn-green+1))))
    `(erc-underline-face ((t (:underline t))))
 
    ;; gnus
-   `(gnus-group-mail-1-face ((,class (:bold t :inherit gnus-group-mail-1-empty))))
+   `(gnus-group-mail-1-face ((,class (:normal t :inherit gnus-group-mail-1-empty))))
    `(gnus-group-mail-1-empty-face ((,class (:inherit gnus-group-news-1-empty))))
-   `(gnus-group-mail-2-face ((,class (:bold t :inherit gnus-group-mail-2-empty))))
+   `(gnus-group-mail-2-face ((,class (:normal t :inherit gnus-group-mail-2-empty))))
    `(gnus-group-mail-2-empty-face ((,class (:inherit gnus-group-news-2-empty))))
-   `(gnus-group-mail-3-face ((,class (:bold t :inherit gnus-group-mail-3-empty))))
+   `(gnus-group-mail-3-face ((,class (:normal t :inherit gnus-group-mail-3-empty))))
    `(gnus-group-mail-3-empty-face ((,class (:inherit gnus-group-news-3-empty))))
-   `(gnus-group-mail-4-face ((,class (:bold t :inherit gnus-group-mail-4-empty))))
+   `(gnus-group-mail-4-face ((,class (:normal t :inherit gnus-group-mail-4-empty))))
    `(gnus-group-mail-4-empty-face ((,class (:inherit gnus-group-news-4-empty))))
-   `(gnus-group-mail-5-face ((,class (:bold t :inherit gnus-group-mail-5-empty))))
+   `(gnus-group-mail-5-face ((,class (:normal t :inherit gnus-group-mail-5-empty))))
    `(gnus-group-mail-5-empty-face ((,class (:inherit gnus-group-news-5-empty))))
-   `(gnus-group-mail-6-face ((,class (:bold t :inherit gnus-group-mail-6-empty))))
+   `(gnus-group-mail-6-face ((,class (:normal t :inherit gnus-group-mail-6-empty))))
    `(gnus-group-mail-6-empty-face ((,class (:inherit gnus-group-news-6-empty))))
-   `(gnus-group-mail-low-face ((,class (:bold t :inherit gnus-group-mail-low-empty))))
+   `(gnus-group-mail-low-face ((,class (:normal t :inherit gnus-group-mail-low-empty))))
    `(gnus-group-mail-low-empty-face ((,class (:inherit gnus-group-news-low-empty))))
-   `(gnus-group-news-1-face ((,class (:bold t :inherit gnus-group-news-1-empty))))
-   `(gnus-group-news-2-face ((,class (:bold t :inherit gnus-group-news-2-empty))))
-   `(gnus-group-news-3-face ((,class (:bold t :inherit gnus-group-news-3-empty))))
-   `(gnus-group-news-4-face ((,class (:bold t :inherit gnus-group-news-4-empty))))
-   `(gnus-group-news-5-face ((,class (:bold t :inherit gnus-group-news-5-empty))))
-   `(gnus-group-news-6-face ((,class (:bold t :inherit gnus-group-news-6-empty))))
-   `(gnus-group-news-low-face ((,class (:bold t :inherit gnus-group-news-low-empty))))
+   `(gnus-group-news-1-face ((,class (:normal t :inherit gnus-group-news-1-empty))))
+   `(gnus-group-news-2-face ((,class (:normal t :inherit gnus-group-news-2-empty))))
+   `(gnus-group-news-3-face ((,class (:normal t :inherit gnus-group-news-3-empty))))
+   `(gnus-group-news-4-face ((,class (:normal t :inherit gnus-group-news-4-empty))))
+   `(gnus-group-news-5-face ((,class (:normal t :inherit gnus-group-news-5-empty))))
+   `(gnus-group-news-6-face ((,class (:normal t :inherit gnus-group-news-6-empty))))
+   `(gnus-group-news-low-face ((,class (:normal t :inherit gnus-group-news-low-empty))))
    `(gnus-header-content-face ((,class (:inherit message-header-other))))
    `(gnus-header-from-face ((,class (:inherit message-header-from))))
    `(gnus-header-name-face ((,class (:inherit message-header-name))))
@@ -237,18 +237,18 @@
    `(gnus-header-subject-face ((,class (:inherit message-header-subject))))
    `(gnus-summary-cancelled-face ((,class (:foreground ,zenburn-orange))))
    `(gnus-summary-high-ancient-face ((,class (:foreground ,zenburn-blue))))
-   `(gnus-summary-high-read-face ((,class (:foreground ,zenburn-green :weight bold))))
-   `(gnus-summary-high-ticked-face ((,class (:foreground ,zenburn-orange :weight bold))))
-   `(gnus-summary-high-unread-face ((,class (:foreground ,zenburn-fg :weight bold))))
+   `(gnus-summary-high-read-face ((,class (:foreground ,zenburn-green :weight normal))))
+   `(gnus-summary-high-ticked-face ((,class (:foreground ,zenburn-orange :weight normal))))
+   `(gnus-summary-high-unread-face ((,class (:foreground ,zenburn-fg :weight normal))))
    `(gnus-summary-low-ancient-face ((,class (:foreground ,zenburn-blue))))
    `(gnus-summary-low-read-face ((t (:foreground ,zenburn-green))))
-   `(gnus-summary-low-ticked-face ((,class (:foreground ,zenburn-orange :weight bold))))
+   `(gnus-summary-low-ticked-face ((,class (:foreground ,zenburn-orange :weight normal))))
    `(gnus-summary-low-unread-face ((,class (:foreground ,zenburn-fg))))
    `(gnus-summary-normal-ancient-face ((,class (:foreground ,zenburn-blue))))
    `(gnus-summary-normal-read-face ((,class (:foreground ,zenburn-green))))
-   `(gnus-summary-normal-ticked-face ((,class (:foreground ,zenburn-orange :weight bold))))
+   `(gnus-summary-normal-ticked-face ((,class (:foreground ,zenburn-orange :weight normal))))
    `(gnus-summary-normal-unread-face ((,class (:foreground ,zenburn-fg))))
-   `(gnus-summary-selected-face ((,class (:foreground ,zenburn-yellow :weight bold))))
+   `(gnus-summary-selected-face ((,class (:foreground ,zenburn-yellow :weight normal))))
    `(gnus-cite-1-face ((,class (:foreground ,zenburn-blue))))
    `(gnus-cite-10-face ((,class (:foreground ,zenburn-yellow-1))))
    `(gnus-cite-11-face ((,class (:foreground ,zenburn-yellow))))
@@ -274,28 +274,28 @@
    `(hl-line-face ((,class (:background ,zenburn-bg-1))))
 
    ;; ido-mode
-   `(ido-first-match ((,class (:foreground ,zenburn-yellow :weight bold))))
-   `(ido-only-match ((,class (:foreground ,zenburn-orange :weight bold))))
+   `(ido-first-match ((,class (:foreground ,zenburn-yellow :weight normal))))
+   `(ido-only-match ((,class (:foreground ,zenburn-orange :weight normal))))
    `(ido-subdir ((,class (:foreground ,zenburn-yellow))))
 
    ;; linum-mode
    `(linum ((,class (:foreground ,zenburn-fg-1 :background ,zenburn-bg-1))))
 
    ;; magit
-   `(magit-section-title ((,class (:foreground ,zenburn-yellow :weight bold))))
-   `(magit-branch ((,class (:foreground ,zenburn-orange :weight bold))))
+   `(magit-section-title ((,class (:foreground ,zenburn-yellow :weight normal))))
+   `(magit-branch ((,class (:foreground ,zenburn-orange :weight normal))))
 
    ;; message-mode
    `(message-cited-text-face ((,class (:inherit font-lock-comment))))
    `(message-header-name-face ((,class (:foreground ,zenburn-green+1))))
    `(message-header-other-face ((,class (:foreground ,zenburn-green))))
-   `(message-header-to-face ((,class (:foreground ,zenburn-yellow :weight bold))))
-   `(message-header-from-face ((,class (:foreground ,zenburn-yellow :weight bold))))
-   `(message-header-cc-face ((,class (:foreground ,zenburn-yellow :weight bold))))
-   `(message-header-newsgroups-face ((,class (:foreground ,zenburn-yellow :weight bold))))
-   `(message-header-subject-face ((,class (:foreground ,zenburn-orange :weight bold))))
+   `(message-header-to-face ((,class (:foreground ,zenburn-yellow :weight normal))))
+   `(message-header-from-face ((,class (:foreground ,zenburn-yellow :weight normal))))
+   `(message-header-cc-face ((,class (:foreground ,zenburn-yellow :weight normal))))
+   `(message-header-newsgroups-face ((,class (:foreground ,zenburn-yellow :weight normal))))
+   `(message-header-subject-face ((,class (:foreground ,zenburn-orange :weight normal))))
    `(message-header-xheader-face ((,class (:foreground ,zenburn-green))))
-   `(message-mml-face ((,class (:foreground ,zenburn-yellow :weight bold))))
+   `(message-mml-face ((,class (:foreground ,zenburn-yellow :weight normal))))
    `(message-separator-face ((,class (:inherit font-lock-comment))))
 
    ;; mew
@@ -306,7 +306,7 @@
    `(mew-face-header-key ((,class (:foreground ,zenburn-green))))
    `(mew-face-header-private ((,class (:foreground ,zenburn-green))))
    `(mew-face-header-important ((,class (:foreground ,zenburn-blue))))
-   `(mew-face-header-marginal ((,class (:foreground ,zenburn-fg :weight bold))))
+   `(mew-face-header-marginal ((,class (:foreground ,zenburn-fg :weight normal))))
    `(mew-face-header-warning ((,class (:foreground ,zenburn-red))))
    `(mew-face-header-xmew ((,class (:foreground ,zenburn-green))))
    `(mew-face-header-xmew-bad ((,class (:foreground ,zenburn-red))))
@@ -336,15 +336,15 @@
 
    ;; org-mode
    `(org-agenda-date-today
-     ((,class (:foreground "white" :slant italic :weight bold))) t)
+     ((,class (:foreground "white" :slant italic :weight normal))) t)
    `(org-agenda-structure
      ((,class (:inherit font-lock-comment-face))))
-   `(org-archived ((,class (:foreground ,zenburn-fg :weight bold))))
+   `(org-archived ((,class (:foreground ,zenburn-fg :weight normal))))
    `(org-checkbox ((,class (:background ,zenburn-bg+2 :foreground "white"
                                    :box (:line-width 1 :style released-button)))))
    `(org-date ((,class (:foreground ,zenburn-blue :underline t))))
    `(org-deadline-announce ((,class (:foreground ,zenburn-red-1))))
-   `(org-done ((,class (:bold t :weight bold :foreground ,zenburn-green+3))))
+   `(org-done ((,class (:normal t :weight normal :foreground ,zenburn-green+3))))
    `(org-formula ((,class (:foreground ,zenburn-yellow-2))))
    `(org-headline-done ((,class (:foreground ,zenburn-green+3))))
    `(org-hide ((,class (:foreground ,zenburn-bg-1))))
@@ -362,11 +362,11 @@
    `(org-scheduled-today ((,class (:foreground ,zenburn-blue+1))))
    `(org-special-keyword ((,class (:foreground ,zenburn-yellow-1))))
    `(org-table ((,class (:foreground ,zenburn-green+2))))
-   `(org-tag ((,class (:bold t :weight bold))))
+   `(org-tag ((,class (:normal t :weight normal))))
    `(org-time-grid ((,class (:foreground ,zenburn-orange))))
-   `(org-todo ((,class (:bold t :foreground ,zenburn-red :weight bold))))
+   `(org-todo ((,class (:normal t :foreground ,zenburn-red :weight normal))))
    `(org-upcoming-deadline ((,class (:inherit font-lock-keyword-face))))
-   `(org-warning ((,class (:bold t :foreground ,zenburn-red :weight bold))))
+   `(org-warning ((,class (:normal t :foreground ,zenburn-red :weight normal))))
 
    ;; outline
    `(outline-8 ((,class (:inherit default))))
@@ -404,8 +404,8 @@
    `(rpm-spec-var-face ((,class (:foreground ,zenburn-red))))
 
    ;; show-paren
-   `(show-paren-mismatch ((,class (:foreground ,zenburn-red-3 :background ,zenburn-bg :weight bold))))
-   `(show-paren-match ((,class (:foreground ,zenburn-blue-1 :background ,zenburn-bg :weight bold))))
+   `(show-paren-mismatch ((,class (:foreground ,zenburn-red-3 :background ,zenburn-bg :weight normal))))
+   `(show-paren-match ((,class (:foreground ,zenburn-blue-1 :background ,zenburn-bg :weight normal))))
 
    ;; SLIME
    `(slime-repl-inputed-output-face ((,class (:foreground ,zenburn-red))))
@@ -449,7 +449,7 @@
    `(wl-highlight-summary-thread-top-face ((,class (:foreground ,zenburn-yellow))))
    `(wl-highlight-thread-indent-face ((,class (:foreground ,zenburn-magenta))))
    `(wl-highlight-summary-refiled-face ((,class (:foreground ,zenburn-fg))))
-   `(wl-highlight-summary-displaying-face ((,class (:underline t :weight bold))))
+   `(wl-highlight-summary-displaying-face ((,class (:underline t :weight normal))))
 
    ;; which-func-mode
    `(which-func ((,class (:foreground ,zenburn-green+1))))))
