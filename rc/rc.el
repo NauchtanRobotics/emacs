@@ -33,6 +33,9 @@
 ;; Make side by side buffers function the same as the main window
 (setq truncate-partial-width-windows nil)
 
+;; Use aspell for the spellcheck program
+(setq-default ispell-program-name "aspell")
+
 ;; Set some good defaults.
 (setq fill-column 80
       column-number-mode t
