@@ -1,22 +1,20 @@
-#name : H Header
+# -*- mode: snippet -*-
+# name: H file header
+# key: h_file
 # --
 /**
- *  @file
+ *  @file ${1:`(file-name-nondirectory (buffer-file-name))`}
  *
  *  @brief
  *
  */
-
-#ifndef ${1:_`(upcase (file-name-nondirectory (file-name-sans-extension (buffer-file-name))))`_H_}
-#define $1
+#ifndef ${2:`(upcase (file-name-sans-extension (file-name-nondirectory (buffer-file-name))))`_H_}
+#define $2
 
 /*  INCLUDES ---------------------------------------------------------------- */
 /*  PUBLIC DEFINES ---------------------------------------------------------- */
 /*  PUBLIC TYPEDEFS / STRUCTURES -------------------------------------------- */
 /*  PUBLIC DATA DECLARATION ------------------------------------------------- */
 /*  PUBLIC FUNCTION DECLARATION --------------------------------------------- */
-/*  ------------------------------------------------------------------------- */
 
-$0
-
-#endif /* $1 */
+#endif /* $2 */
