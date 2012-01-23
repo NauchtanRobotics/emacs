@@ -9,8 +9,8 @@
         indent-tabs-mode nil
         fill-column 80
         c-block-comment-prefix "*  "
-        c-doc-comment-style '((java-mode . javadoc) (pike-mode . autodoc) (c-mode . javadoc)))
-
+        c-doc-comment-style '((java-mode . javadoc) (pike-mode . autodoc) (c-mode . javadoc))
+        c-doc-comment-style 'javadoc)
   )
 
 ;; Puts current function in status bar.

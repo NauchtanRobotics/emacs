@@ -403,6 +403,9 @@
    `(rpm-spec-tag-face ((,class (:foreground ,zenburn-blue))))
    `(rpm-spec-var-face ((,class (:foreground ,zenburn-red))))
 
+   ;; Textile mode.
+   `(textile-link-face ((,class (:foreground ,zenburn-yellow-2 :underline t))))
+
    ;; show-paren
    `(show-paren-mismatch ((,class (:foreground ,zenburn-red-3 :background ,zenburn-bg :weight normal))))
    `(show-paren-match ((,class (:foreground ,zenburn-blue-1 :background ,zenburn-bg :weight normal))))
