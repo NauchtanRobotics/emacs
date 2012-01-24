@@ -32,3 +32,5 @@
 (dolist (p my-packages)
   (when (not (package-installed-p p))
     (package-install p)))
+(put 'ido-exit-minibuffer 'disabled nil)
+(put 'narrow-to-region 'disabled nil)

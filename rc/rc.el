@@ -117,3 +117,6 @@
 ;; Split windows
 (global-set-key (kbd "C-x |") 'split-window-right)
 (global-set-key (kbd "C-x _") 'split-window-below)
+
+;; Complete
+(global-set-key (kbd "M-RET") 'complete)
