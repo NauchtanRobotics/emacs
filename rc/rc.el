@@ -67,8 +67,8 @@
 (setq split-height-threshold 1000)
 (setq split-width-threshold 160)
 
-;; -----------------------------------------------------------------------------
-;; SHORTCUTS
+;; Disable interactive highlighting.
+(global-hi-lock-mode -1)
 ;; -----------------------------------------------------------------------------
 
 (global-set-key (kbd "M-Q") 'fill-region)
