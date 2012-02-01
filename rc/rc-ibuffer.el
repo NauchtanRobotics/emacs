@@ -8,10 +8,12 @@
 
 (setq ibuffer-default-sorting-mode 'major-mode)
 
+(setq ibuffer-mode-hook nil)
+
 (add-hook 'ibuffer-mode-hook
       '(lambda ()
          (ibuffer-auto-mode 1)
-         (ibuffer-switch-to-saved-filter-groups "noja")))
+         (ibuffer-switch-to-saved-filter-groups "alcolizer")))
 
 (setq ibuffer-saved-filter-groups
     '(
@@ -27,9 +29,34 @@
                 (name . "\*svn"))
         )
 
-        ("noja"
-         ("user" (filename . "user"))
-         ("tools" (filename . "tools"))
+        ("alcolizer"
+         ("user/curium" (filename . "user/curium"))
+         ("user/da" (filename . "user/da"))
+         ("user/dbmgr" (filename . "user/dbmgr"))
+         ("user/dbquery" (filename . "user/dbquery"))
+         ("user/es" (filename . "user/es"))
+         ("user/gpio" (filename . "user/gpio"))
+         ("user/host" (filename . "user/host"))
+         ("user/include" (filename . "user/include"))
+         ("user/libac" (filename . "user/libac"))
+         ("user/libapp" (filename . "user/libapp"))
+         ("user/libcm" (filename . "user/libcm"))
+         ("user/libdb" (filename . "user/libdb"))
+         ("user/libdbsch" (filename . "user/libdbsch"))
+         ("user/libdebug" (filename . "user/libdebug"))
+         ("user/liberr" (filename . "user/liberr"))
+         ("user/libev" (filename . "user/libev"))
+         ("user/libfsm" (filename . "user/libfsm"))
+         ("user/liblog" (filename . "user/liblog"))
+         ("user/liblua" (filename . "user/liblua"))
+         ("user/libstatus" (filename . "user/libstatus"))
+         ("user/libtalloc" (filename . "user/libtalloc"))
+         ("user/logger" (filename . "user/logger"))
+         ("user/luahost" (filename . "user/luahost"))
+         ("user/redis" (filename . "user/redis"))
+         ("user/scripts" (filename . "user/scripts"))
+         ("user/thorium" (filename . "user/thorium"))
+         ("user/zeromq" (filename . "user/zeromq"))
 
          ("help"          (or
                                (name . "\*Help\*")
@@ -39,6 +66,8 @@
          ("emacs-config"  (filename . ".emacs.d"))
          ("svn"           (name . "\*svn"))
          ("dired"         (mode . dired-mode))
+         ("erc"           (mode . erc-mode))
+         ("org"           (mode . org-mode))
         )
       ))
 
