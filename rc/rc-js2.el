@@ -1,6 +1,9 @@
 (autoload 'js2-mode "js2-mode" nil t)
 (add-to-list 'auto-mode-alist '("\\.js$" . js2-mode))
 
+;; Note, js2-mode must be byte compiled for it to be useable.
+;; byte-compile-file js2-mode.el
+
 ;; js2-mode uses c-fill-paragraph for comment filling. Unfortunately that
 ;; doesn't work unless you set a few variables first...
 (defun ben-js2-mode-hook ()
