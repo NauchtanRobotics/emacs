@@ -9,8 +9,8 @@
 (defun ben-js2-mode-hook ()
   (c-set-style "bsd")
   (hl-line-mode)
-  (setq c-basic-offset 4
-        tab-width 4
+  (setq c-basic-offset 2
+        tab-width 2
         indent-tabs-mode nil
         fill-column 80
         comment-start "/*  "
