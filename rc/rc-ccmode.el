@@ -32,6 +32,7 @@
             (local-set-key (kbd "C-c C-k")     'hs-toggle-hiding)
             (local-set-key (kbd "C-c <up>")    'hs-hide-all)
             (local-set-key (kbd "C-c <down>")  'hs-show-all)
+            (local-set-key (kbd "C-c m")       'compile)
             (hs-minor-mode t)))
 
 ;;; Use xgtags (an interface to gtags) to tag parsing.
