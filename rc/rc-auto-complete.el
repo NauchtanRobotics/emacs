@@ -11,7 +11,7 @@
 (global-auto-complete-mode t)
 
 ; Start auto-completion after 2 characters of a word
-(setq ac-auto-start 2)
+(setq ac-auto-start nil)
 
 ; case sensitivity is important when finding matches
 (setq ac-ignore-case nil)
