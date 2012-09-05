@@ -120,3 +120,9 @@
 
 ;; Complete
 (global-set-key (kbd "M-RET") 'complete)
+
+;; Yank from register. Second argument to insert-register puts marks before and
+;; after inserted text.
+(global-set-key (kbd "C-c 0") (lambda () (interactive) (insert-register ?0 1)))
+(global-set-key (kbd "C-c 1") (lambda () (interactive) (insert-register ?1 1)))
+(global-set-key (kbd "C-c 2") (lambda () (interactive) (insert-register ?2 1)))
