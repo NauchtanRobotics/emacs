@@ -13,14 +13,14 @@
 ;; Add new packages here for auto-install
 (defvar my-packages
   '(
+    starter-kit
+    starter-kit-bindings    
     bm
     expand-region
     gtags
     lusty-explorer
     multiple-cursors
     org
-    starter-kit
-    starter-kit-bindings
     yasnippet
     zencoding-mode
     )

@@ -1,3 +1,6 @@
+(add-to-list 'load-path (concat dotfiles-dir "/elpa/multiple-cursors-1.1.1"))
+(autoload 'multiple-cursors "multiple-cursors" nil t)
+
 (require 'multiple-cursors)
 
 (global-set-key (kbd "C-S-c C-S-c") 'mc/edit-lines)
