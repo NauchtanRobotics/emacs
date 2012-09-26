@@ -13,13 +13,16 @@
 ;; Add new packages here for auto-install
 (defvar my-packages
   '(
-    org
-    lusty-explorer
     bm
-    yasnippet
+    expand-region
     gtags
+    lusty-explorer
+    multiple-cursors
+    org
     starter-kit
     starter-kit-bindings
+    yasnippet
+    zencoding-mode
     )
   "A list of packages to ensure are installed at launch.")
 

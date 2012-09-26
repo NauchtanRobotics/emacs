@@ -126,3 +126,6 @@
 (global-set-key (kbd "C-c 0") (lambda () (interactive) (insert-register ?0 1)))
 (global-set-key (kbd "C-c 1") (lambda () (interactive) (insert-register ?1 1)))
 (global-set-key (kbd "C-c 2") (lambda () (interactive) (insert-register ?2 1)))
+(global-set-key (kbd "C-c C-0") (lambda () (interactive) (append-to-register ?0 (region-beginning) (region-end))))
+(global-set-key (kbd "C-c C-1") (lambda () (interactive) (append-to-register ?1 (region-beginning) (region-end))))
+(global-set-key (kbd "C-c C-2") (lambda () (interactive) (append-to-register ?2 (region-beginning) (region-end))))
