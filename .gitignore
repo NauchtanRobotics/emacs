@@ -8,3 +8,4 @@ places
 url
 tramp
 *.elc
+.mc-lists.el
