@@ -51,6 +51,7 @@
       ;; colors with +x are lighter, colors with -x are darker
       (zenburn-fg "#dcdccc")
       (zenburn-fg-1 "#656555")
+      (zenburn-bg-2 "#1b1b1b")
       (zenburn-bg-1 "#2b2b2b")
       (zenburn-bg-05 "#383838")
       (zenburn-bg "#3f3f3f")
@@ -126,7 +127,7 @@
    `(minibuffer-prompt ((,class (:foreground ,zenburn-yellow))))
    `(mode-line
      ((,class (:foreground ,zenburn-green+1
-                           :background ,zenburn-bg-1
+                           :background ,zenburn-bg-2
                            :box (:line-width -1 :style released-button)))))
    `(mode-line-buffer-id ((,class (:foreground ,zenburn-yellow :weight normal))))
    `(mode-line-inactive

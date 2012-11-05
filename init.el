@@ -19,7 +19,6 @@
     expand-region
     gtags
     lusty-explorer
-    multiple-cursors
     org
     yasnippet
     zencoding-mode
