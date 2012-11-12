@@ -69,6 +69,11 @@
 
 ;; Disable interactive highlighting.
 (global-hi-lock-mode -1)
+
+;; Global hungry delete
+(require 'hungry-delete)
+(global-hungry-delete-mode)
+
 ;; -----------------------------------------------------------------------------
 
 (global-set-key (kbd "M-Q") 'fill-region)
@@ -129,3 +134,5 @@
 (global-set-key (kbd "C-c C-0") (lambda () (interactive) (append-to-register ?0 (region-beginning) (region-end))))
 (global-set-key (kbd "C-c C-1") (lambda () (interactive) (append-to-register ?1 (region-beginning) (region-end))))
 (global-set-key (kbd "C-c C-2") (lambda () (interactive) (append-to-register ?2 (region-beginning) (region-end))))
+
+(global-set-key (kbd "C-c C-d") 'hungry-delete-forward)
