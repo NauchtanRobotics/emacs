@@ -37,7 +37,7 @@
             (hs-minor-mode t)))
 
 ;; Temporary to debug indentation problems.
-(setq c-debug-parse-state t)
+;; (setq c-debug-parse-state t)
 
 ;;; Use xgtags (an interface to gtags) to tag parsing.
 ;; (add-hook 'c-mode-common-hook
