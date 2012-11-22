@@ -13,6 +13,7 @@
             (local-set-key (kbd "C-c C-k")     'hs-toggle-hiding)
             (local-set-key (kbd "C-c <up>")    'hs-hide-all)
             (local-set-key (kbd "C-c <down>")  'hs-show-all)
+            (setq js2-basic-offset 2)
             )
           )
 
