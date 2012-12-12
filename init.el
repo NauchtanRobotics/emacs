@@ -6,33 +6,35 @@
 
 (add-to-list 'load-path (concat dotfiles-dir "/packages"))
 
-(setq package-archives '(("ELPA" . "http://tromey.com/elpa/")
-                         ("gnu" . "http://elpa.gnu.org/packages/")
-                         ("marmalade" . "http://marmalade-repo.org/packages/")))
+(when (>= emacs-major-version 24)
+  (require 'package)
+  (setq package-archives
+        '(
+          ("ELPA" . "http://tromey.com/elpa/")
+          ("gnu" . "http://elpa.gnu.org/packages/")
+          ("marmalade" . "http://marmalade-repo.org/packages/")
+          ))
+  (package-initialize)
+  )
 
-;; Add new packages here for auto-install
+(when (not package-archive-contents)
+  (package-refresh-contents))
+
+;; Add in your own as you wish:
 (defvar my-packages
   '(
     starter-kit
-    starter-kit-bindings    
+    starter-kit-bindings
     bm
     expand-region
     gtags
     lusty-explorer
     org
     yasnippet
-    zencoding-mode
+    zencoding-mode    
     )
   "A list of packages to ensure are installed at launch.")
-
-(require 'package)
-(package-initialize)
-
-(when (not package-archive-contents)
-  (package-refresh-contents))
 
 (dolist (p my-packages)
   (when (not (package-installed-p p))
     (package-install p)))
-(put 'ido-exit-minibuffer 'disabled nil)
-(put 'narrow-to-region 'disabled nil)
