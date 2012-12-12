@@ -21,12 +21,11 @@
     lusty-explorer
     org
     slime
-    slime-js
     slime-repl
     starter-kit
     starter-kit-bindings
     yasnippet
-    zencoding-mode    
+    zencoding-mode
     )
   "A list of packages to ensure are installed at launch.")
 
