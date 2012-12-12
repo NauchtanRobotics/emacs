@@ -9,3 +9,4 @@ url
 tramp
 *.elc
 .mc-lists.el
+ac-comphist.dat
