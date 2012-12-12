@@ -1,3 +1,6 @@
+;; Note, js2-mode must be byte compiled for it to be useable.
+;; byte-compile-file js2-mode.el
+
 (autoload 'js2-mode "js2-mode" nil t)
 (add-to-list 'auto-mode-alist '("\\.js$" . js2-mode))
 
@@ -17,8 +20,10 @@
             )
           )
 
-;; Note, js2-mode must be byte compiled for it to be useable.
-;; byte-compile-file js2-mode.el
+(global-set-key [f5] 'slime-js-reload)
+(add-hook 'js2-mode-hook
+          (lambda ()
+            (slime-js-minor-mode 1)))
 
 ;; js2-mode uses c-fill-paragraph for comment filling. Unfortunately that
 ;; doesn't work unless you set a few variables first...
