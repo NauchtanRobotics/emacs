@@ -16,11 +16,14 @@
             (local-set-key (kbd "C-c C-k")     'hs-toggle-hiding)
             (local-set-key (kbd "C-c <up>")    'hs-hide-all)
             (local-set-key (kbd "C-c <down>")  'hs-show-all)
+            (local-set-key (kbd "C-x C-e")     'slime-js-eval-current)
+            (local-set-key (kbd "C-c C-e")     'slime-js-eval-and-replace-current)
             (setq js2-basic-offset 2)
             )
           )
 
-(global-set-key [f5] 'slime-js-reload)
+(global-set-key [f9] 'slime-js-reload)
+
 (add-hook 'js2-mode-hook
           (lambda ()
             (slime-js-minor-mode 1)))

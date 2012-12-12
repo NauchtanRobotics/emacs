@@ -3,7 +3,9 @@
 
 ;; (require 'slime-js nil 'noerror)
 
-(add-hook 'after-init-hook
-          #'(lambda ()
-              (when (locate-library "slime-js")
-                (require 'setup-slime-js))))
+;; (add-hook 'after-init-hook
+;;           #'(lambda ()
+;;               (when (locate-library "slime-js")
+;;                 (require 'setup-slime-js))))
+
+(require 'setup-slime-js nil 'noerror)
