@@ -76,6 +76,77 @@
 
 ;; -----------------------------------------------------------------------------
 
+(defun move-line-down ()
+  (interactive)
+  (let ((col (current-column)))
+    (save-excursion
+      (forward-line)
+      (transpose-lines 1))
+    (forward-line)
+    (move-to-column col)))
+
+(defun move-line-up ()
+  (interactive)
+  (let ((col (current-column)))
+    (save-excursion
+      (forward-line)
+      (transpose-lines -1))
+    (move-to-column col)))
+
+(global-set-key (kbd "<C-S-down>") 'move-line-down)
+(global-set-key (kbd "<C-S-up>") 'move-line-up)
+(global-set-key (kbd "C-S-n") 'move-line-down)
+(global-set-key (kbd "C-S-p") 'move-line-up)
+
+(defun open-line-below ()
+  (interactive)
+  (end-of-line)
+  (newline)
+  (indent-for-tab-command))
+
+(defun open-line-above ()
+  (interactive)
+  (beginning-of-line)
+  (newline)
+  (forward-line -1)
+  (indent-for-tab-command))
+
+(global-set-key (kbd "<C-M-return>") 'open-line-below)
+(global-set-key (kbd "<C-S-return>") 'open-line-above)
+
+;; ----------------------------------------------------------------------------
+
+;; Set window to a fixed width.
+
+(defun set-window-width (n)
+  "Set the selected window's width."
+  (adjust-window-trailing-edge (selected-window) (- n (window-width)) t))
+
+(defun set-82-columns ()
+  "Set the selected window to 82 columns."
+  (interactive)
+  (set-window-width 82))
+
+(global-set-key "\C-x~" 'set-82-columns)
+
+;; ----------------------------------------------------------------------------
+
+;; Toggle window dedication
+
+(defun toggle-window-dedicated ()
+  "Toggle whether the current active window is dedicated or not"
+  (interactive)
+  (message
+   (if (let (window (get-buffer-window (current-buffer)))
+         (set-window-dedicated-p window
+                                 (not (window-dedicated-p window))))
+       "Window '%s' is dedicated"
+     "Window '%s' is normal")
+   (current-buffer)))
+
+;; -----------------------------------------------------------------------------
+
+
 (global-set-key (kbd "M-Q") 'fill-region)
 (global-set-key [(f5)] '(lambda () (interactive) (revert-buffer nil t nil)))
 (global-set-key [(f6)] 'call-last-kbd-macro)
