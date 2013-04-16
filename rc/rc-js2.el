@@ -19,6 +19,7 @@
             (local-set-key (kbd "C-x C-e")     'slime-js-eval-current)
             (local-set-key (kbd "C-c C-e")     'slime-js-eval-and-replace-current)
             (setq js2-basic-offset 2)
+            (auto-fill-mode -1)
             )
           )
 
