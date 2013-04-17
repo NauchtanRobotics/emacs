@@ -29,6 +29,9 @@
     )
   "A list of packages to ensure are installed at launch.")
 
+;; Old packages...
+
+
 ;; Install packages.
 (dolist (p my-packages)
   (when (not (package-installed-p p))

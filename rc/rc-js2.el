@@ -19,14 +19,16 @@
             (local-set-key (kbd "C-x C-e")     'slime-js-eval-current)
             (local-set-key (kbd "C-c C-e")     'slime-js-eval-and-replace-current)
             (setq js2-basic-offset 2)
+            (auto-fill-mode -1)
             )
           )
 
 (global-set-key [f9] 'slime-js-reload)
 
-(add-hook 'js2-mode-hook
-          (lambda ()
-            (slime-js-minor-mode 1)))
+;; This appears to slow everything right down.
+;; (add-hook 'js2-mode-hook
+;;           (lambda ()
+;;             (slime-js-minor-mode 1)))
 
 ;; js2-mode uses c-fill-paragraph for comment filling. Unfortunately that
 ;; doesn't work unless you set a few variables first...
