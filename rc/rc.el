@@ -74,6 +74,9 @@
 (require 'hungry-delete)
 (global-hungry-delete-mode)
 
+;; Stop the compilation window on the first error.
+(setq compilation-scroll-output 'first-error)
+
 ;; -----------------------------------------------------------------------------
 
 (defun move-line-down ()
