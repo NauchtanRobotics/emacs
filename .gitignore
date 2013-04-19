@@ -10,3 +10,4 @@ tramp
 *.elc
 .mc-lists.el
 ac-comphist.dat
+custom.el
