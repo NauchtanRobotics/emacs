@@ -210,3 +210,6 @@
 (global-set-key (kbd "C-c C-2") (lambda () (interactive) (append-to-register ?2 (region-beginning) (region-end))))
 
 (global-set-key (kbd "C-c C-d") 'hungry-delete-forward)
+
+(global-set-key (kbd "C-c m") 'compile)
+(global-set-key (kbd "C-c j") 'next-error)
