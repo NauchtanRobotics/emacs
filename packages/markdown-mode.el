@@ -4611,4 +4611,59 @@ if ARG is omitted or nil."
   (when (featurep 'xemacs)
     (make-local-hook 'after-change-functions)
     (make-local-hook 'font-lock-extend-region-functions)
-    (make-local-hook 'window-con
+    (make-local-hook 'window-configuration-change-hook))
+
+  ;; Multiline font lock
+  (add-hook 'font-lock-extend-region-functions
+            'markdown-font-lock-extend-region)
+
+  ;; Anytime text changes make sure it gets fontified correctly
+  (add-hook 'after-change-functions 'markdown-check-change-for-wiki-link t t)
+
+  ;; If we left the buffer there is a really good chance we were
+  ;; creating one of the wiki link documents. Make sure we get
+  ;; refontified when we come back.
+  (add-hook 'window-configuration-change-hook
+            'markdown-fontify-buffer-wiki-links t t)
+
+  ;; do the initial link fontification
+  (markdown-fontify-buffer-wiki-links))
+
+;;(add-to-list 'auto-mode-alist '("\\.text$" . markdown-mode))
+
+
+;;; GitHub Flavored Markdown Mode  ============================================
+
+(defvar gfm-font-lock-keywords
+  (append
+   ;; GFM features to match first
+   (list
+    (cons 'markdown-match-gfm-code-blocks '((1 markdown-pre-face)
+                                            (2 markdown-language-keyword-face)
+                                            (3 markdown-pre-face)
+                                            (4 markdown-pre-face))))
+   ;; Basic Markdown features (excluding possibly overridden ones)
+   markdown-mode-font-lock-keywords-basic
+   ;; GFM features to match last
+   (list
+    (cons markdown-regex-gfm-italic '(2 markdown-italic-face))))
+  "Default highlighting expressions for GitHub-flavored Markdown mode.")
+
+;;;###autoload
+(define-derived-mode gfm-mode markdown-mode "GFM"
+  "Major mode for editing GitHub Flavored Markdown files."
+  (setq markdown-link-space-sub-char "-")
+  (set (make-local-variable 'font-lock-defaults)
+       '(gfm-font-lock-keywords))
+  (auto-fill-mode 0)
+  ;; Use visual-line-mode if available, fall back to longlines-mode:
+  (if (fboundp 'visual-line-mode)
+      (visual-line-mode 1)
+    (longlines-mode 1))
+  ;; do the initial link fontification
+  (markdown-fontify-buffer-wiki-links))
+
+
+(provide 'markdown-mode)
+
+;;; markdown-mode.el ends here
