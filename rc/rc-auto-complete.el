@@ -10,7 +10,7 @@
 (setq-default ac-sources (add-to-list 'ac-sources 'ac-source-dictionary))
 (global-auto-complete-mode t)
 
-; Start auto-completion after 2 characters of a word
+; Do not start auto-completion automatically.
 (setq ac-auto-start nil)
 
 ; case sensitivity is important when finding matches

@@ -15,4 +15,10 @@
             (local-set-key (kbd "C-c i") 'go-goto-imports)
             (local-set-key (kbd "M-.") 'godef-jump)
             (setq tab-width 4)
+            (setq ac-auto-start t)
+            (setq ac-ignore-case t)
             ))
+
+;; Auto-completion
+(require 'go-autocomplete)
+(require 'auto-complete-config)
