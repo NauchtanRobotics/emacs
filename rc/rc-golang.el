@@ -1,5 +1,18 @@
+;; Golang support
+;;
+;; To install godef (equivalent to ctags):
+;; go get -v code.google.com/p/rog-go/exp/cmd/godef
+;; go install -v code.google.com/p/rog-go/exp/cmd/godef
+
 (require 'go-mode-load)
 
-(local-set-key (kbd "C-c m") 'compile)
+(add-hook 'before-save-hook 'gofmt-before-save)
 
-(setq tab-width 4)
+(add-hook 'go-mode-hook
+          (lambda ()
+            (local-set-key (kbd "C-c C-r") 'go-remove-unused-imports)
+            (local-set-key (kbd "C-c C-a") 'go-import-add)
+            (local-set-key (kbd "C-c i") 'go-goto-imports)
+            (local-set-key (kbd "M-.") 'godef-jump)
+            (setq tab-width 4)
+            ))
