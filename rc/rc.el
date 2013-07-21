@@ -225,3 +225,5 @@
 
 (global-set-key (kbd "C-c m") 'compile)
 (global-set-key (kbd "C-c j") 'next-error)
+
+(global-set-key (kbd "C-c p") 'yas-expand)
