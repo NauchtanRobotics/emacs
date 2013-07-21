@@ -90,7 +90,7 @@
 
    ;;; basic coloring
    `(default ((,class (:foreground ,zenburn-fg :background ,zenburn-bg))))
-   `(cursor ((,class (:foreground ,zenburn-fg))))
+   `(cursor ((,class (:foreground ,zenburn-fg :background ,zenburn-red+1))))
    `(escape-glyph-face ((,class (:foreground ,zenburn-red))))
    `(fringe ((,class (:foreground ,zenburn-fg :background ,zenburn-bg+1))))
    `(header-line ((,class (:foreground ,zenburn-yellow
