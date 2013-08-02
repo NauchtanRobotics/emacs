@@ -17,6 +17,7 @@
   '(
     bm
     expand-region
+    emmet-mode
     gtags
     lusty-explorer
     org
