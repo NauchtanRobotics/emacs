@@ -8,6 +8,7 @@
 
 ;; Default font and theme.
 (set-default-font "Consolas 8")
+(add-to-list 'default-frame-alist '(font . "Consolas 8"))
 (load-theme 'zenburn)
 
 ;; Scroll margin and stop-that-bloody-halfpage-jump
