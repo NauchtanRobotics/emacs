@@ -51,3 +51,4 @@
 
 (load (concat dotfiles-dir "rc/rc.el"))
 (mapc #'load (directory-files (concat dotfiles-dir "rc") nil ".el$"))
+(put 'narrow-to-region 'disabled nil)
