@@ -26,3 +26,8 @@
 
 ;; Don't show any of this
 (setq erc-hide-list '("JOIN" "PART" "QUIT" "NICK"))
+
+;; Show inlined images using erc-image.el
+(require 'erc-image)
+(add-to-list 'erc-modules 'image)
+(erc-update-modules)
