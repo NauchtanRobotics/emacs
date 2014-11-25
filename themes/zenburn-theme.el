@@ -144,7 +144,7 @@
    `(font-lock-comment-face ((,class (:foreground ,zenburn-green))))
    `(font-lock-comment-delimiter-face ((,class (:foreground ,zenburn-green))))
    `(font-lock-constant-face ((,class (:foreground ,zenburn-green+4))))
-   `(font-lock-doc-face ((,class (:foreground ,zenburn-green+1))))
+   `(font-lock-doc-face ((,class (:foreground ,zenburn-blue+1))))
    `(font-lock-doc-string-face ((,class (:foreground ,zenburn-blue+1))))
    `(font-lock-function-name-face ((,class (:foreground ,zenburn-blue))))
    `(font-lock-keyword-face ((,class (:foreground ,zenburn-yellow :weight normal))))
