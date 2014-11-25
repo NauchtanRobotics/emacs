@@ -6,6 +6,6 @@
 ;;               (when (locate-library "slime-js")
 ;;                 (require 'setup-slime-js))))
 
-(require 'slime)
-(require 'slime-js nil 'noerror)
-(require 'setup-slime-js nil 'noerror)
+;; (require 'slime)
+;; (require 'slime-js nil 'noerror)
+;; (require 'setup-slime-js nil 'noerror)

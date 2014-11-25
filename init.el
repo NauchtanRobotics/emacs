@@ -21,8 +21,6 @@
     gtags
     lusty-explorer
     org
-    slime
-    slime-repl
     starter-kit
     starter-kit-bindings
     yasnippet
@@ -47,6 +45,7 @@
 (load custom-file 'noerror)
 
 (add-to-list 'load-path (concat dotfiles-dir "/packages"))
+(add-to-list 'load-path (concat dotfiles-dir "/packages/evil"))
 (add-to-list 'load-path (concat dotfiles-dir "rc"))
 
 (load (concat dotfiles-dir "rc/rc.el"))

@@ -228,3 +228,4 @@
 (global-set-key (kbd "C-c j") 'next-error)
 
 (global-set-key (kbd "C-c p") 'yas-expand)
+(global-set-key (kbd "C-c RET") 'cua-set-rectangle-mark)
