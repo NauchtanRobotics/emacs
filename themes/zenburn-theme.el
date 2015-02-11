@@ -285,6 +285,8 @@
    ;; magit
    `(magit-section-title ((,class (:foreground ,zenburn-yellow :weight normal))))
    `(magit-branch ((,class (:foreground ,zenburn-orange :weight normal))))
+   `(magit-diff-add ((,class (:foreground ,zenburn-green+4))))
+   `(magit-diff-del ((,class (:foreground ,zenburn-red))))
 
    ;; message-mode
    `(message-cited-text-face ((,class (:inherit font-lock-comment))))
