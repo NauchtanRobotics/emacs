@@ -3,6 +3,7 @@
   (c-set-offset 'case-label '+)
   (c-set-offset 'statement-cont '0)
   (c-set-offset 'cpp-define-intro '0)
+  (c-set-offset 'inextern-lang '0)
   (hl-line-mode)
   (setq c-basic-offset 4
         tab-width 4
@@ -34,6 +35,8 @@
             (local-set-key (kbd "C-c <down>")  'hs-show-all)
             (local-set-key (kbd "C-c m")       'compile)
             (local-set-key (kbd "C-c j")       'next-error)
+            (local-set-key (kbd "C-j")         'newline)
+            (local-set-key (kbd "C-d")         'delete-forward-char)
             (hs-minor-mode t)))
 
 ;; Temporary to debug indentation problems.
