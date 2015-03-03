@@ -4,7 +4,7 @@
 ;; go get -v code.google.com/p/rog-go/exp/cmd/godef
 ;; go install -v code.google.com/p/rog-go/exp/cmd/godef
 
-(require 'go-mode-load)
+(require 'go-mode-autoloads)
 
 (add-hook 'before-save-hook 'gofmt-before-save)
 
