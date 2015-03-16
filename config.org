@@ -1,0 +1,161 @@
+#+TITLE: Ben Davies Emacs Configuration
+#+STARTUP: overview
+#+OPTIONS: toc:4 h:4
+
+* Configuration
+** About this file
+
+This file configures emacs using [[http://orgmode.org/worg/org-contrib/babel/intro.html#literate-programming][org-babel]]. An example of "literate programming", elisp configuration is read from the org file. I relied heavily on [[http://pages.sachachua.com/.emacs.d/Sacha.html][Sacha Chua's Emacs configuration]] to build this file.
+
+The =~/.emacs.d/init.el= file contains only the following to bootstrap org-babel mode:
+
+#+BEGIN_SRC emacs-lisp :tangle no
+  ;;; init.el --- Where all the magic begins
+  ;;
+  ;; This file loads Org-mode and then loads the rest of our Emacs
+  ;; initialization from Emacs lisp embedded in literate Org-mode files.
+
+  ;; Load up Org Mode and (now included) Org Babel for elisp embedded in
+  ;; Org Mode files
+  (setq dotfiles-dir (file-name-directory (or (buffer-file-name) load-file-name)))
+
+  (let* ((org-dir (expand-file-name
+                   "lisp" (expand-file-name
+                           "org" (expand-file-name
+                                  "src" dotfiles-dir))))
+         (org-contrib-dir (expand-file-name
+                           "lisp" (expand-file-name
+                                   "contrib" (expand-file-name
+                                              ".." org-dir))))
+         (load-path (append (list org-dir org-contrib-dir)
+                            (or load-path nil))))
+    ;; load up Org-mode and Org-babel
+    (require 'org-install)
+    (require 'ob-tangle))
+
+  ;; load up all literate org-mode files in this directory
+  (mapc #'org-babel-load-file (directory-files dotfiles-dir t "\\.org$"))
+#+END_SRC 
+** Personal Information
+
+#+BEGIN_SRC emacs-lisp 
+  (setq user-full-name "Ben Davies"
+        user-mail-address "brdavies@gmail.com")
+#+END_SRC 
+
+** Emacs Initialisation
+
+*** Site-specific variables
+
+Store site-specific stuff in a file outside of source control (dropbox location, etc).
+
+#+BEGIN_SRC emacs-lisp
+  (load "~/.emacs.site" 'noerror)
+#+END_SRC
+
+*** Load secrets
+
+Store secrets in a file outside of source control.
+
+#+BEGIN_SRC emacs-lisp
+  (load "~/.emacs.secrets" 'noerror)
+#+END_SRC
+
+*** Initialise package
+
+#+BEGIN_SRC emacs-lisp
+  (require 'package)
+  (add-to-list 'package-archives '("marmalade" . "https://marmalade-repo.org/packages/"))
+  (package-initialize)
+#+END_SRC
+    
+*** Add package sources
+
+#+BEGIN_SRC emacs-lisp
+  (add-to-list 'package-archives '("org" . "http://orgmode.org/elpa/") t)
+  (add-to-list 'package-archives '("melpa" . "http://melpa.org/packages/") t)
+#+END_SRC
+
+Use =M-x package-refresh-contents= to reload the list of packages after adding these for the first time.
+
+*** Add package directories
+
+Save to =my-init-file= and =my-dotfiles-directory= absolute path to the emacs configuration directory.
+
+#+BEGIN_SRC emacs-lisp
+  (setq my-init-file (or load-file-name (buffer-file-name)))
+  (setq my-dotfiles-directory (file-name-directory my-init-file))
+#+END_SRC
+
+I manually install packages, add those directories to the =load-path= so emacs can find them.
+
+#+BEGIN_SRC emacs-lisp
+  (add-to-list 'load-path (concat my-dotfiles-directory "packages"))
+#+END_SRC
+
+*** Initialise use-package
+
+The [[https://github.com/jwiegley/use-package][use-package]] declaration macro allows a different way of installing and initialising packages. I'm testing it out to see if it's better than just using =(require 'x)=.
+
+#+BEGIN_SRC emacs-lisp
+  (unless (package-installed-p 'use-package)
+    (package-install 'use-package))
+  (setq use-package-verbose t)
+  (require 'use-package)
+#+END_SRC
+** General Configuration
+*** Backups
+
+By default, Emacs saves backup files in the current directory. These are the files ending in =~= that are cluttering up your directory lists. The following code stashes them all in =~/.emacs.d/backups=, where I can find them with =C-x C-f= (=find-file=) if I really need to.
+
+#+BEGIN_SRC emacs-lisp
+  (setq backup-directory-alist '(("." . "~/.emacs.d/backups")))
+#+END_SRC
+
+Disk space is cheap. Save lots.
+
+#+BEGIN_SRC emacs-lisp
+  ;; Delete excess backup versions silently.
+  (setq delete-old-versions -1)
+
+  ;; Make numeric backup versions unconditionally.
+  (setq version-control t)
+
+  ;; Backups of registered files are made as with other files.
+  (setq vc-make-backup-files t)
+
+  ;; Transforms to apply to buffer file name before making auto-save
+  ;; file name.
+  (setq auto-save-file-name-transforms '((".*" "~/.emacs.d/auto-save-list/" t)))
+#+END_SRC
+
+*** Text mode
+
+Visual line mode is used to wrap long lines. It rebinds =C-a=, =C-e=, and =C-k= to commands that operate by visual lines instead of logical lines.
+
+#+BEGIN_SRC emacs-lisp
+  (remove-hook 'text-mode-hook #'turn-on-auto-fill)
+  (add-hook 'text-mode-hook 'turn-on-visual-line-mode)
+#+END_SRC
+
+** Navigation and windows
+*** Split windows
+#+BEGIN_SRC emacs-lisp
+  (global-set-key (kbd "C-x |") 'split-window-right)
+  (global-set-key (kbd "C-x _") 'split-window-below)
+#+END_SRC
+
+** Coding
+*** C
+*** Go
+*** Javascript   
+** Org
+*** Keyboard shortcuts
+
+#+BEGIN_SRC emacs-lisp
+  (bind-key "C-c i"
+            (lambda()
+              (interactive)
+              (org-babel-load-file "~/.emacs.d/config.org")))
+#+END_SRC
+

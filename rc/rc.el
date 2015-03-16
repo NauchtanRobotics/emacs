@@ -205,10 +205,7 @@
 ;; Rotate buffers through windows.
 (global-set-key (kbd "s-r") 'rotate-windows)
 (global-set-key (kbd "C-x 4 t") 'rotate-windows)
-
-;; Split windows
-(global-set-key (kbd "C-x |") 'split-window-right)
-(global-set-key (kbd "C-x _") 'split-window-below)
+n
 
 ;; Complete
 (global-set-key (kbd "M-RET") 'complete)
