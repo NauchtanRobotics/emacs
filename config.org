@@ -42,7 +42,7 @@ The =~/.emacs.d/init.el= file contains only the following to bootstrap org-babel
   (setq user-full-name "Ben Davies"
         user-mail-address "brdavies@gmail.com")
 #+END_SRC 
-
+   
 ** Emacs Initialisation
 
 *** Site-specific variables
@@ -99,6 +99,7 @@ The [[https://github.com/jwiegley/use-package][use-package]] declaration macro a
 
 #+BEGIN_SRC emacs-lisp
   (unless (package-installed-p 'use-package)
+    (package-refresh-contents)
     (package-install 'use-package))
   (setq use-package-verbose t)
   (require 'use-package)
@@ -138,11 +139,94 @@ Visual line mode is used to wrap long lines. It rebinds =C-a=, =C-e=, and =C-k= 
   (add-hook 'text-mode-hook 'turn-on-visual-line-mode)
 #+END_SRC
 
+*** Deleting text
+
+When Delete Selection mode is enabled, typed text replaces the selection if the selection is active. Otherwise, typed text is just inserted at point regardless of any selection. This means that =C-d= will actually replace delete the current selection.
+
+#+BEGIN_SRC emacs-lisp
+  (delete-selection-mode t)
+#+END_SRC
+
+*** Clean up user interface
+
+#+BEGIN_SRC emacs-lisp
+  (when window-system
+    (tooltip-mode -1)
+    (tool-bar-mode -1)
+    (menu-bar-mode 1)
+    (scroll-bar-mode -1))
+
+  ;; Make sure the scratch buffer is empty.
+  (setq initial-scratch-message nil)
+#+END_SRC
+
+*** Helm - interactive completion
+
+Helm makes it easy to complete various things. I find it to be easier to configure than ido in order to get completion in as many places as possible, although I prefer ido's way of switching buffers.
+
+#+BEGIN_SRC emacs-lisp
+  (use-package helm
+    :ensure helm
+    :diminish helm-mode
+    :init
+    (progn
+      (require 'helm-config)
+      (setq helm-candidate-number-limit 100)
+      ;; From https://gist.github.com/antifuchs/9238468
+      (setq helm-idle-delay 0.0 ; update fast sources immediately (doesn't).
+            helm-input-idle-delay 0.01    ; this actually updates things
+                                          ; reeeelatively quickly.
+            helm-quick-update t
+            helm-M-x-requires-pattern nil
+            helm-ff-skip-boring-files t
+            helm-split-window-in-side-p t)
+      (helm-mode))
+    :bind (("C-c h" . helm-mini)
+           ("C-h a" . helm-apropos)
+           ("C-x C-b" . helm-buffers-list)
+           ("C-x b" . helm-buffers-list)
+           ("M-y" . helm-show-kill-ring)
+           ("M-x" . helm-M-x)
+           ("C-x C-f" . helm-find-files)
+           ("C-x c o" . helm-occur)
+           ("C-x c s" . helm-swoop)
+           ("C-x c SPC" . helm-all-mark-rings)))
+  (ido-mode -1) ;; Turn off ido mode in case I enabled it accidentally
+#+END_SRC
+
 ** Navigation and windows
 *** Split windows
+
+For some reason I find it easier to visualise splitting windows with pipe and underscore than with =C-2= and =C-3=.
+    
 #+BEGIN_SRC emacs-lisp
   (global-set-key (kbd "C-x |") 'split-window-right)
   (global-set-key (kbd "C-x _") 'split-window-below)
+#+END_SRC
+
+*** Jumping between windows
+#+BEGIN_SRC emacs-lisp
+  (global-set-key (kbd "C-x p")
+                  (lambda ()
+                    (interactive)
+                    (other-window -1)))
+#+END_SRC    
+
+[[http://www.gnu.org/software/emacs/manual/html_node/emacs/Window-Convenience.html][winner-mode]] lets you use =C-c <left>= and =C-c <right>= to switch between window configurations. This is handy when something has popped up a buffer that you want to look at briefly before returning to whatever you were working on. When you're done, press =C-c <left>=.
+
+#+BEGIN_SRC emacs-lisp
+  (winner-mode 1)
+#+END_SRC
+
+*** Silver search
+
+The silver searcher is a code searching tool with a focus on speed.
+
+#+BEGIN_SRC emacs-lisp
+  (use-package helm-ag
+    :bind (("C-c s d" . helm-ag)
+           ("C-c s f" . helm-ag-this-file)
+           ("C-c s p" . helm-ag-project-root)))
 #+END_SRC
 
 ** Coding
@@ -153,9 +237,21 @@ Visual line mode is used to wrap long lines. It rebinds =C-a=, =C-e=, and =C-k= 
 *** Keyboard shortcuts
 
 #+BEGIN_SRC emacs-lisp
-  (bind-key "C-c i"
-            (lambda()
-              (interactive)
-              (org-babel-load-file "~/.emacs.d/config.org")))
+  (global-set-key (kbd "C-c i")
+                  (lambda()
+                    (interactive)
+                    (org-babel-load-file "~/.emacs.d/config.org")))
 #+END_SRC
 
+** Emacs server
+
+#+BEGIN_SRC emacs-lisp
+  (when window-system
+    (require 'server)
+    (or (server-running-p)
+        (server-start)))
+  ;; (use-package edit-server
+  ;;   :init
+  ;;   (add-hook 'after-init-hook 'server-start t)
+  ;;   (add-hook 'after-init-hook 'edit-server-start t))
+#+END_SRC
