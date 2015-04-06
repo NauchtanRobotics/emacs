@@ -35,14 +35,14 @@ The =~/.emacs.d/init.el= file contains only the following to bootstrap org-babel
 
   ;; load up all literate org-mode files in this directory
   (mapc #'org-babel-load-file (directory-files dotfiles-dir t "\\.org$"))
-#+END_SRC 
+#+END_SRC
 ** Personal Information
 
-#+BEGIN_SRC emacs-lisp 
+#+BEGIN_SRC emacs-lisp
   (setq user-full-name "Ben Davies"
         user-mail-address "brdavies@gmail.com")
-#+END_SRC 
-   
+#+END_SRC
+
 ** Emacs Initialisation
 
 *** Site-specific variables
@@ -68,7 +68,7 @@ Store secrets in a file outside of source control.
   (add-to-list 'package-archives '("marmalade" . "https://marmalade-repo.org/packages/"))
   (package-initialize)
 #+END_SRC
-    
+
 *** Add package sources
 
 #+BEGIN_SRC emacs-lisp
@@ -153,8 +153,9 @@ When Delete Selection mode is enabled, typed text replaces the selection if the 
   (when window-system
     (tooltip-mode -1)
     (tool-bar-mode -1)
-    (menu-bar-mode 1)
-    (scroll-bar-mode -1))
+    (menu-bar-mode -1)
+    (scroll-bar-mode -1)
+    (setq visible-bell t))
 
   ;; Make sure the scratch buffer is empty.
   (setq initial-scratch-message nil)
@@ -162,7 +163,7 @@ When Delete Selection mode is enabled, typed text replaces the selection if the 
 
 *** Helm - interactive completion
 
-Helm makes it easy to complete various things. I find it to be easier to configure than ido in order to get completion in as many places as possible, although I prefer ido's way of switching buffers.
+Helm makes it easy to complete various things.
 
 #+BEGIN_SRC emacs-lisp
   (use-package helm
@@ -179,7 +180,8 @@ Helm makes it easy to complete various things. I find it to be easier to configu
             helm-quick-update t
             helm-M-x-requires-pattern nil
             helm-ff-skip-boring-files t
-            helm-split-window-in-side-p t)
+            helm-split-window-in-side-p t
+            helm-full-frame t)
       (helm-mode))
     :bind (("C-c h" . helm-mini)
            ("C-h a" . helm-apropos)
@@ -194,11 +196,88 @@ Helm makes it easy to complete various things. I find it to be easier to configu
   (ido-mode -1) ;; Turn off ido mode in case I enabled it accidentally
 #+END_SRC
 
+Custom function to "maximise" the helm completion buffer.
+
+#+BEGIN_SRC emacs-lisp
+  (defun my-make-helm-full-frame ()
+    (interactive)
+    (with-selected-window (helm-window)
+      (delete-other-windows)))
+  (define-key helm-map (kbd "C-c m") 'my-make-helm-full-frame)
+#+END_SRC
+
+*** Change "yes or no" to "y or n"
+
+Lazy people like me never want to type "yes" when "y" will suffice.
+
+#+BEGIN_SRC emacs-lisp
+  (fset 'yes-or-no-p 'y-or-n-p)
+#+END_SRC
+
+*** Theme
+
+#+BEGIN_SRC emacs-lisp
+  (use-package color-theme :ensure t)
+
+  (eval-after-load 'color-theme
+    '(progn
+       (add-to-list 'custom-theme-load-path (concat my-dotfiles-directory "themes"))
+       (load-theme 'zenburn t)))
+#+END_SRC
+
+*** Uniquely named buffers
+
+When several buffers visit identically-named files, Emacs must give the buffers distinct names. Use the file's directory name at the beginning of the buffer name.
+
+#+BEGIN_SRC emacs-lisp
+  (require 'uniquify)
+  (setq uniquify-buffer-name-style 'forward)
+#+END_SRC
+
+*** Easily see matching parentheses
+
+=show-paren-mode= highlights matching pairs of parentheses and other characters.
+
+#+BEGIN_SRC emacs-lisp
+  (setq show-paren-delay 0)
+  (show-paren-mode 1)
+#+END_SRC
+
+*** Tabs, spaces, and whitespace
+
+Prevent emacs from converting spaces to tabs when it formats a region.
+
+#+BEGIN_SRC emacs-lisp
+  (setq-default indent-tabs-mode nil)
+#+END_SRC
+
+Delete trailing whitespace when the file is saved.
+
+#+BEGIN_SRC emacs-lisp
+  (add-hook 'before-save-hook 'delete-trailing-whitespace)
+#+END_SRC
+
+*** Clipboard
+
+X generally distinguishes between two types of selection, the /primary/ and the /clipboard/. Every time you select a piece of text with the mouse, the selected text is set as the /primary/ selection. Using the copy function will place the selected text into the /clipboard/. Pasting using the middle mouse button will insert the /primary/ selection, pasting using the paste function will insert the /clipboard/.
+
+Set =x-select-enable-primary= so that the Emacs commands =C-w= and =C-y= to use the /primary/ selection. Set =x-select-enable-clipboard= so that the Emacs commands =C-w= and =C-y= to use the /clipboard/ selection. =save-interprogram-paste-before-kill= saves the clipboard contents to the killring before Emacs puts text in the clipboard.
+
+=mouse-yank-at-point= ensures text pasted with the mouse is inserted at point and not where the mouse was clicked.
+
+#+BEGIN_SRC emacs-lisp
+  (setq x-select-enable-clipboard t
+        x-select-enable-primary t
+        save-interprogram-paste-before-kill t
+        mouse-yank-at-point t)
+#+END_SRC
+
+*** CUA Mode
 ** Navigation and windows
 *** Split windows
 
 For some reason I find it easier to visualise splitting windows with pipe and underscore than with =C-2= and =C-3=.
-    
+
 #+BEGIN_SRC emacs-lisp
   (global-set-key (kbd "C-x |") 'split-window-right)
   (global-set-key (kbd "C-x _") 'split-window-below)
@@ -210,29 +289,61 @@ For some reason I find it easier to visualise splitting windows with pipe and un
                   (lambda ()
                     (interactive)
                     (other-window -1)))
-#+END_SRC    
+#+END_SRC
 
 [[http://www.gnu.org/software/emacs/manual/html_node/emacs/Window-Convenience.html][winner-mode]] lets you use =C-c <left>= and =C-c <right>= to switch between window configurations. This is handy when something has popped up a buffer that you want to look at briefly before returning to whatever you were working on. When you're done, press =C-c <left>=.
 
 #+BEGIN_SRC emacs-lisp
   (winner-mode 1)
+  (global-set-key (kbd "C-c p") 'winner-undo)
+  (global-set-key (kbd "C-c P") 'winner-redo)
 #+END_SRC
 
-*** Silver search
+*** Silver searcher
 
 The silver searcher is a code searching tool with a focus on speed.
 
 #+BEGIN_SRC emacs-lisp
   (use-package helm-ag
-    :bind (("C-c s d" . helm-ag)
-           ("C-c s f" . helm-ag-this-file)
-           ("C-c s p" . helm-ag-project-root)))
+    :bind (("C-c s d" . helm-ag)                ; Search recursively
+           ("C-c s f" . helm-ag-this-file)      ; Search file
+           ("C-c s p" . helm-ag-project-root))) ; Search project recursively
 #+END_SRC
 
 ** Coding
 *** C
+
+#+BEGIN_SRC emacs-lisp
+  (add-hook 'c-mode-common-hook
+            (lambda ()
+                  (semantic-mode 1)
+                  (c-set-style "bsd")
+                  (c-set-offset 'case-label '+)
+                  (c-set-offset 'statement-cont '0)
+                  (c-set-offset 'cpp-define-intro '0)
+                  (c-set-offset 'inextern-lang '0)
+                  (setq c-basic-offset 4
+                        tab-width 4
+                        indent-tabs-mode nil
+                        fill-column 80
+                        c-block-comment-prefix "*  "
+                        c-doc-comment-style '((java-mode . javadoc) (pike-mode . autodoc) (c-mode . javadoc))
+                        c-doc-comment-style 'javadoc)
+                  (local-set-key (kbd "C-c o")       'ff-find-other-file)
+                  (local-set-key (kbd "C-c <right>") 'hs-show-block)
+                  (local-set-key (kbd "C-c <left>")  'hs-hide-block)
+                  (local-set-key (kbd "C-c C-k")     'hs-toggle-hiding)
+                  (local-set-key (kbd "C-c <up>")    'hs-hide-all)
+                  (local-set-key (kbd "C-c <down>")  'hs-show-all)
+                  (local-set-key (kbd "C-c m")       'compile)
+                  (local-set-key (kbd "C-c j")       'next-error)
+                  (local-set-key (kbd "C-j")         'newline)
+                  (local-set-key (kbd "C-d")         'delete-forward-char)
+                  ))
+#+END_SRC
+
 *** Go
-*** Javascript   
+*** Javascript
 ** Org
 *** Keyboard shortcuts
 
@@ -255,3 +366,5 @@ The silver searcher is a code searching tool with a focus on speed.
   ;;   (add-hook 'after-init-hook 'server-start t)
   ;;   (add-hook 'after-init-hook 'edit-server-start t))
 #+END_SRC
+* Things still todo
+** TODO Bind =M-p= and =M-n= to scroll functions

@@ -1,6 +1,3 @@
-;; Default directory for custom themes.
-(setq custom-theme-directory (concat dotfiles-dir "/themes"))
-
 ;; Default font and theme.
 (set-default-font "Consolas 8")
 (add-to-list 'default-frame-alist '(font . "Consolas 8"))
@@ -40,10 +37,6 @@
 
 ;; Set line wrap to 80 (the default is 70).
 (setq-default fill-column 80)
-
-;; Nuke whitespace when writing to a file. If this stuffs up
-;; makefiles, try this delete-trailing-whitespace.
-(add-hook 'before-save-hook 'delete-trailing-whitespace)
 
 ;; Make sure we always split vertically (side-by-side).
 (setq split-height-threshold 1000)
