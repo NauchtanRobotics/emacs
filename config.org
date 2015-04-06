@@ -153,12 +153,13 @@ When Delete Selection mode is enabled, typed text replaces the selection if the 
   (when window-system
     (tooltip-mode -1)
     (tool-bar-mode -1)
-    (menu-bar-mode -1)
-    (scroll-bar-mode -1)
-    (setq visible-bell t))
+    (scroll-bar-mode -1))
 
-  ;; Make sure the scratch buffer is empty.
-  (setq initial-scratch-message nil)
+  (menu-bar-mode -1)
+
+  (setq initial-scratch-message nil
+        visible-bell t
+        inhibit-startup-message t)
 #+END_SRC
 
 *** Helm - interactive completion
@@ -272,7 +273,25 @@ Set =x-select-enable-primary= so that the Emacs commands =C-w= and =C-y= to use 
         mouse-yank-at-point t)
 #+END_SRC
 
+*** Remembering visited files
+
+#+BEGIN_SRC emacs-lisp
+  (require 'saveplace)
+  (setq-default save-place t)
+  (setq save-place-file (concat my-dotfiles-directory "places"))
+#+END_SRC
+
 *** CUA Mode
+
+Use =cua-mode= for rectangles only.
+
+#+BEGIN_SRC emacs-lisp
+  (cua-mode)
+  (setq cua-enable-cua-keys nil)
+  (global-set-key (kbd "C-c r") 'cua-set-rectangle-mark)
+#+END_SRC
+
+
 ** Navigation and windows
 *** Split windows
 
@@ -368,3 +387,5 @@ The silver searcher is a code searching tool with a focus on speed.
 #+END_SRC
 * Things still todo
 ** TODO Bind =M-p= and =M-n= to scroll functions
+** TODO Bury buffer
+** TODO =C-d= delete text without going to kill ring
