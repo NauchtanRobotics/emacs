@@ -307,7 +307,6 @@ Use =cua-mode= for rectangles only.
   (global-set-key (kbd "C-c r") 'cua-set-rectangle-mark)
 #+END_SRC
 
-
 ** Navigation and windows
 *** Split windows
 
@@ -460,6 +459,17 @@ Scroll without moving point.
 
 *** Go
 *** Javascript
+*** Markdown
+
+#+BEGIN_SRC emacs-lisp
+  (use-package markdown-mode
+    :mode ("\\.text\\'"
+          "\\.markdown\\'"
+          "\\.md\\'")
+    )
+
+#+END_SRC
+
 ** Org
 *** Keyboard shortcuts
 
