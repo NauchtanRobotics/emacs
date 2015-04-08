@@ -397,6 +397,12 @@ Integrate /GNU Global/ with helm.
     )
 #+END_SRC
 
+*** Helm swoop
+
+#+BEGIN_SRC emacs-lisp
+  (use-package helm-swoop)
+#+END_SRC
+
 *** Pre-defined window layouts
 
 #+BEGIN_SRC emacs-lisp
