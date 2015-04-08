@@ -363,6 +363,30 @@ A fast way to find files within projects.
            ("C-c j" . next-error)))
 #+END_SRC
 
+*** Helm GNU Global
+
+Integrate /GNU Global/ with helm.
+
+#+BEGIN_SRC emacs-lisp
+  (use-package helm-gtags
+    :ensure t
+    :init
+    (setq helm-gtags-ignore-case t
+          helm-gtags-auto-update t
+          helm-gtags-use-input-at-cursor t
+          helm-gtags-pulse-at-cursor t
+          helm-gtags-prefix-key (kbd "C-c g")
+          helm-gtags-suggested-key-mapping t)
+    :config
+    (define-key helm-gtags-mode-map (kbd "C-c g a") 'helm-gtags-tags-in-this-function)
+    (define-key helm-gtags-mode-map (kbd "C-c g RET") 'helm-gtags-select)
+    (define-key helm-gtags-mode-map (kbd "M-.") 'helm-gtags-dwim)
+    (define-key helm-gtags-mode-map (kbd "M-,") 'helm-gtags-pop-stack)
+    (define-key helm-gtags-mode-map (kbd "C-c <") 'helm-gtags-previous-history)
+    (define-key helm-gtags-mode-map (kbd "C-c >") 'helm-gtags-next-history)
+    )
+#+END_SRC
+
 *** Pre-defined window layouts
 
 #+BEGIN_SRC emacs-lisp
@@ -433,30 +457,34 @@ Scroll without moving point.
 *** C
 
 #+BEGIN_SRC emacs-lisp
-  (add-hook 'c-mode-common-hook
-            (lambda ()
-                  ;(semantic-mode 1)
-                  (c-set-style "bsd")
-                  (c-set-offset 'case-label '+)
-                  (c-set-offset 'statement-cont '0)
-                  (c-set-offset 'cpp-define-intro '0)
-                  (c-set-offset 'inextern-lang '0)
-                  (setq c-basic-offset 4
-                        tab-width 4
-                        indent-tabs-mode nil
-                        fill-column 80
-                        c-block-comment-prefix "*  "
-                        c-doc-comment-style '((java-mode . javadoc) (pike-mode . autodoc) (c-mode . javadoc))
-                        c-doc-comment-style 'javadoc)
-                  (local-set-key (kbd "C-c o")       'ff-find-other-file)
-                  (local-set-key (kbd "C-c <right>") 'hs-show-block)
-                  (local-set-key (kbd "C-c <left>")  'hs-hide-block)
-                  (local-set-key (kbd "C-c C-k")     'hs-toggle-hiding)
-                  (local-set-key (kbd "C-c <up>")    'hs-hide-all)
-                  (local-set-key (kbd "C-c <down>")  'hs-show-all)
-                  (local-set-key (kbd "C-j")         'newline)
-                  (local-set-key (kbd "C-d")         'delete-forward-char)
-                  ))
+  (defun my-c-mode-common-hook ()
+    "Configure C mode according to my tastes."
+    (interactive)
+    (helm-gtags-mode)
+    (c-set-style "bsd")
+    (c-set-offset 'case-label '+)
+    (c-set-offset 'statement-cont '0)
+    (c-set-offset 'cpp-define-intro '0)
+    (c-set-offset 'inextern-lang '0)
+    (c-set-offset 'arglist-close '0)
+    (setq c-basic-offset 4
+          tab-width 4
+          indent-tabs-mode nil
+          fill-column 80
+          c-block-comment-prefix "*  "
+          c-doc-comment-style '((java-mode . javadoc) (pike-mode . autodoc) (c-mode . javadoc))
+          c-doc-comment-style 'javadoc)
+    (local-set-key (kbd "C-c o")       'ff-find-other-file)
+    (local-set-key (kbd "C-c <right>") 'hs-show-block)
+    (local-set-key (kbd "C-c <left>")  'hs-hide-block)
+    (local-set-key (kbd "C-c C-k")     'hs-toggle-hiding)
+    (local-set-key (kbd "C-c <up>")    'hs-hide-all)
+    (local-set-key (kbd "C-c <down>")  'hs-show-all)
+    (local-set-key (kbd "C-j")         'newline)
+    (local-set-key (kbd "C-d")         'delete-forward-char)
+    )
+
+  (add-hook 'c-mode-common-hook 'my-c-mode-common-hook)
 #+END_SRC
 
 *** Go
