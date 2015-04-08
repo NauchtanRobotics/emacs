@@ -1,11 +1,3 @@
-;; Start the server so emacs client can connect.
-(require 'server)
-(or (server-running-p)
-    (server-start))
-
-;; Default directory for custom themes.
-(setq custom-theme-directory (concat dotfiles-dir "/themes"))
-
 ;; Default font and theme.
 (set-default-font "Consolas 8")
 (add-to-list 'default-frame-alist '(font . "Consolas 8"))
@@ -18,15 +10,6 @@
 
 (cua-mode)
 (setq cua-enable-cua-keys nil)
-
-;; Enable window management.
-(winner-mode 1)
-
-;; Wrap lines at word boundaries.
-(global-visual-line-mode 1)
-
-;; Delete the selection area with a keypress
-(delete-selection-mode t)
 
 ;; Line wrap off.
 (setq default-truncate-lines t)
@@ -46,8 +29,6 @@
       auto-fill-mode 0
       flyspell-mode nil)
 
-(scroll-bar-mode -1)
-
 ;; For the love of god, why the fuck won't auto-fill-mode stop?? I can't fucking
 ;; turn it off.
 (setq auto-fill-mode -1)
@@ -56,13 +37,6 @@
 
 ;; Set line wrap to 80 (the default is 70).
 (setq-default fill-column 80)
-
-;; Nuke whitespace when writing to a file. If this stuffs up
-;; makefiles, try this delete-trailing-whitespace.
-(add-hook 'before-save-hook 'delete-trailing-whitespace)
-
-;; Make sure the scratch buffer is empty.
-(setq initial-scratch-message nil)
 
 ;; Make sure we always split vertically (side-by-side).
 (setq split-height-threshold 1000)
@@ -205,10 +179,6 @@
 ;; Rotate buffers through windows.
 (global-set-key (kbd "s-r") 'rotate-windows)
 (global-set-key (kbd "C-x 4 t") 'rotate-windows)
-
-;; Split windows
-(global-set-key (kbd "C-x |") 'split-window-right)
-(global-set-key (kbd "C-x _") 'split-window-below)
 
 ;; Complete
 (global-set-key (kbd "M-RET") 'complete)

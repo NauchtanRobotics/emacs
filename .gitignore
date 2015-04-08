@@ -11,3 +11,5 @@ tramp
 .mc-lists.el
 ac-comphist.dat
 custom.el
+config.el
+projectile-bookmarks.eld

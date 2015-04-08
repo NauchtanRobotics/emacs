@@ -1,0 +1,486 @@
+#+TITLE: Ben Davies Emacs Configuration
+#+STARTUP: overview
+#+OPTIONS: toc:4 h:4
+
+* Configuration
+** About this file
+
+This file configures emacs using [[http://orgmode.org/worg/org-contrib/babel/intro.html#literate-programming][org-babel]]. An example of "literate programming", elisp configuration is read from the org file. I relied heavily on [[http://pages.sachachua.com/.emacs.d/Sacha.html][Sacha Chua's Emacs configuration]] to build this file.
+
+The =~/.emacs.d/init.el= file contains only the following to bootstrap org-babel mode:
+
+#+BEGIN_SRC emacs-lisp :tangle no
+  ;;; init.el --- Where all the magic begins
+  ;;
+  ;; This file loads Org-mode and then loads the rest of our Emacs
+  ;; initialization from Emacs lisp embedded in literate Org-mode files.
+
+  ;; Load up Org Mode and (now included) Org Babel for elisp embedded in
+  ;; Org Mode files
+  (setq dotfiles-dir (file-name-directory (or (buffer-file-name) load-file-name)))
+
+  (let* ((org-dir (expand-file-name
+                   "lisp" (expand-file-name
+                           "org" (expand-file-name
+                                  "src" dotfiles-dir))))
+         (org-contrib-dir (expand-file-name
+                           "lisp" (expand-file-name
+                                   "contrib" (expand-file-name
+                                              ".." org-dir))))
+         (load-path (append (list org-dir org-contrib-dir)
+                            (or load-path nil))))
+    ;; load up Org-mode and Org-babel
+    (require 'org-install)
+    (require 'ob-tangle))
+
+  ;; load up all literate org-mode files in this directory
+  (mapc #'org-babel-load-file (directory-files dotfiles-dir t "\\.org$"))
+#+END_SRC
+** Personal Information
+
+#+BEGIN_SRC emacs-lisp
+  (setq user-full-name "Ben Davies"
+        user-mail-address "brdavies@gmail.com")
+#+END_SRC
+
+** Emacs Initialisation
+
+*** Site-specific variables
+
+Store site-specific stuff in a file outside of source control (dropbox location, etc).
+
+#+BEGIN_SRC emacs-lisp
+  (load "~/.emacs.site" 'noerror)
+#+END_SRC
+
+*** Load secrets
+
+Store secrets in a file outside of source control.
+
+#+BEGIN_SRC emacs-lisp
+  (load "~/.emacs.secrets" 'noerror)
+#+END_SRC
+
+*** Initialise package
+
+#+BEGIN_SRC emacs-lisp
+  (require 'package)
+  (add-to-list 'package-archives '("marmalade" . "https://marmalade-repo.org/packages/"))
+  (package-initialize)
+#+END_SRC
+
+*** Add package sources
+
+#+BEGIN_SRC emacs-lisp
+  (add-to-list 'package-archives '("org" . "http://orgmode.org/elpa/") t)
+  (add-to-list 'package-archives '("melpa" . "http://melpa.org/packages/") t)
+#+END_SRC
+
+Use =M-x package-refresh-contents= to reload the list of packages after adding these for the first time.
+
+*** Add package directories
+
+Save to =my-init-file= and =my-dotfiles-directory= absolute path to the emacs configuration directory.
+
+#+BEGIN_SRC emacs-lisp
+  (setq my-init-file (or load-file-name (buffer-file-name)))
+  (setq my-dotfiles-directory (file-name-directory my-init-file))
+#+END_SRC
+
+I manually install packages, add those directories to the =load-path= so emacs can find them.
+
+#+BEGIN_SRC emacs-lisp
+  (add-to-list 'load-path (concat my-dotfiles-directory "packages"))
+#+END_SRC
+
+*** Initialise use-package
+
+The [[https://github.com/jwiegley/use-package][use-package]] declaration macro allows a different way of installing and initialising packages. I'm testing it out to see if it's better than just using =(require 'x)=.
+
+#+BEGIN_SRC emacs-lisp
+  (unless (package-installed-p 'use-package)
+    (package-refresh-contents)
+    (package-install 'use-package))
+  (setq use-package-verbose t)
+  (require 'use-package)
+#+END_SRC
+** General Configuration
+*** Backups
+
+By default, Emacs saves backup files in the current directory. These are the files ending in =~= that are cluttering up your directory lists. The following code stashes them all in =~/.emacs.d/backups=, where I can find them with =C-x C-f= (=find-file=) if I really need to.
+
+#+BEGIN_SRC emacs-lisp
+  (setq backup-directory-alist '(("." . "~/.emacs.d/backups")))
+#+END_SRC
+
+Disk space is cheap. Save lots.
+
+#+BEGIN_SRC emacs-lisp
+  ;; Delete excess backup versions silently.
+  (setq delete-old-versions -1)
+
+  ;; Make numeric backup versions unconditionally.
+  (setq version-control t)
+
+  ;; Backups of registered files are made as with other files.
+  (setq vc-make-backup-files t)
+
+  ;; Transforms to apply to buffer file name before making auto-save
+  ;; file name.
+  (setq auto-save-file-name-transforms '((".*" "~/.emacs.d/auto-save-list/" t)))
+#+END_SRC
+
+*** Text mode
+
+Visual line mode is used to wrap long lines. It rebinds =C-a=, =C-e=, and =C-k= to commands that operate by visual lines instead of logical lines.
+
+#+BEGIN_SRC emacs-lisp
+  (remove-hook 'text-mode-hook #'turn-on-auto-fill)
+  (add-hook 'text-mode-hook 'turn-on-visual-line-mode)
+#+END_SRC
+
+*** Toggle line wrapping
+
+Easily turn on and off line wrapping.
+
+#+BEGIN_SRC emacs-lisp
+  (global-set-key (kbd "<f12>") 'toggle-truncate-lines)
+#+END_SRC
+
+*** Deleting text
+
+When Delete Selection mode is enabled, typed text replaces the selection if the selection is active. Otherwise, typed text is just inserted at point regardless of any selection. This means that =C-d= will actually replace delete the current selection.
+
+#+BEGIN_SRC emacs-lisp
+  (delete-selection-mode t)
+#+END_SRC
+
+*** Clean up user interface
+
+#+BEGIN_SRC emacs-lisp
+  (when window-system
+    (tooltip-mode -1)
+    (tool-bar-mode -1)
+    (scroll-bar-mode -1))
+
+  (menu-bar-mode -1)
+
+  (setq initial-scratch-message nil
+        visible-bell t
+        inhibit-startup-message t)
+#+END_SRC
+
+*** Helm - interactive completion
+
+Helm makes it easy to complete various things.
+
+#+BEGIN_SRC emacs-lisp
+    (use-package helm
+      :ensure helm
+      :diminish helm-mode
+      :init
+      (progn
+        (require 'helm-config)
+        (setq helm-candidate-number-limit 100)
+        ;; From https://gist.github.com/antifuchs/9238468
+        (setq helm-idle-delay 0.0 ; update fast sources immediately (doesn't).
+              helm-input-idle-delay 0.01    ; this actually updates things
+                                            ; reeeelatively quickly.
+              helm-quick-update t
+              helm-M-x-requires-pattern nil
+              helm-ff-skip-boring-files t
+              helm-split-window-in-side-p t
+              helm-full-frame t)
+        (helm-mode))
+      :bind (("C-z" . helm-select-action)
+             ("C-c h" . helm-mini)
+             ("C-h a" . helm-apropos)
+             ("C-x C-b" . helm-buffers-list)
+             ("C-x b" . helm-buffers-list)
+             ("M-y" . helm-show-kill-ring)
+             ("M-x" . helm-M-x)
+             ("C-x C-f" . helm-find-files)
+             ("C-x c o" . helm-occur)
+             ("C-x c s" . helm-swoop)
+             ("C-x c SPC" . helm-all-mark-rings))
+      :config
+      (bind-keys :map helm-map
+                 ("<tab>" . helm-execute-persistent-action))
+      )
+    (ido-mode -1) ;; Turn off ido mode in case I enabled it accidentally
+#+END_SRC
+
+Custom function to "maximise" the helm completion buffer.
+
+#+BEGIN_SRC emacs-lisp
+  (defun my-make-helm-full-frame ()
+    (interactive)
+    (with-selected-window (helm-window)
+      (delete-other-windows)))
+  (define-key helm-map (kbd "C-c m") 'my-make-helm-full-frame)
+#+END_SRC
+
+*** Change "yes or no" to "y or n"
+
+Lazy people like me never want to type "yes" when "y" will suffice.
+
+#+BEGIN_SRC emacs-lisp
+  (fset 'yes-or-no-p 'y-or-n-p)
+#+END_SRC
+
+*** Theme
+
+#+BEGIN_SRC emacs-lisp
+  (use-package color-theme :ensure t)
+
+  (eval-after-load 'color-theme
+    '(progn
+       (set-default-font "Consolas 8")
+       (add-to-list 'default-frame-alist '(font . "Consolas 8"))
+       ;; (set-face-attribute 'default nil :height 80)
+       (add-to-list 'custom-theme-load-path (concat my-dotfiles-directory "themes"))
+       (load-theme 'zenburn t)))
+#+END_SRC
+
+*** Uniquely named buffers
+
+When several buffers visit identically-named files, Emacs must give the buffers distinct names. Use the file's directory name at the beginning of the buffer name.
+
+#+BEGIN_SRC emacs-lisp
+  (require 'uniquify)
+  (setq uniquify-buffer-name-style 'forward)
+#+END_SRC
+
+*** Easily see matching parentheses
+
+=show-paren-mode= highlights matching pairs of parentheses and other characters.
+
+#+BEGIN_SRC emacs-lisp
+  (setq show-paren-delay 0)
+  (show-paren-mode 1)
+#+END_SRC
+
+*** Tabs, spaces, and whitespace
+
+Prevent emacs from converting spaces to tabs when it formats a region.
+
+#+BEGIN_SRC emacs-lisp
+  (setq-default indent-tabs-mode nil)
+#+END_SRC
+
+Delete trailing whitespace when the file is saved.
+
+#+BEGIN_SRC emacs-lisp
+  (add-hook 'before-save-hook 'delete-trailing-whitespace)
+#+END_SRC
+
+*** Clipboard
+
+X generally distinguishes between two types of selection, the /primary/ and the /clipboard/. Every time you select a piece of text with the mouse, the selected text is set as the /primary/ selection. Using the copy function will place the selected text into the /clipboard/. Pasting using the middle mouse button will insert the /primary/ selection, pasting using the paste function will insert the /clipboard/.
+
+Set =x-select-enable-primary= so that the Emacs commands =C-w= and =C-y= to use the /primary/ selection. Set =x-select-enable-clipboard= so that the Emacs commands =C-w= and =C-y= to use the /clipboard/ selection. =save-interprogram-paste-before-kill= saves the clipboard contents to the killring before Emacs puts text in the clipboard.
+
+=mouse-yank-at-point= ensures text pasted with the mouse is inserted at point and not where the mouse was clicked.
+
+#+BEGIN_SRC emacs-lisp
+  (setq x-select-enable-clipboard t
+        x-select-enable-primary t
+        save-interprogram-paste-before-kill t
+        mouse-yank-at-point t)
+#+END_SRC
+
+*** Remembering visited files
+
+#+BEGIN_SRC emacs-lisp
+  (require 'saveplace)
+  (setq-default save-place t)
+  (setq save-place-file (concat my-dotfiles-directory "places"))
+#+END_SRC
+
+*** CUA Mode
+
+Use =cua-mode= for rectangles only.
+
+#+BEGIN_SRC emacs-lisp
+  (cua-mode)
+  (setq cua-enable-cua-keys nil)
+  (global-set-key (kbd "C-c r") 'cua-set-rectangle-mark)
+#+END_SRC
+
+
+** Navigation and windows
+*** Split windows
+
+For some reason I find it easier to visualise splitting windows with pipe and underscore than with =C-2= and =C-3=.
+
+#+BEGIN_SRC emacs-lisp
+  (global-set-key (kbd "C-x |") 'split-window-right)
+  (global-set-key (kbd "C-x _") 'split-window-below)
+#+END_SRC
+
+*** Jumping between windows
+#+BEGIN_SRC emacs-lisp
+  (global-set-key (kbd "C-x p")
+                  (lambda ()
+                    (interactive)
+                    (other-window -1)))
+#+END_SRC
+
+[[http://www.gnu.org/software/emacs/manual/html_node/emacs/Window-Convenience.html][winner-mode]] lets you use =C-c <left>= and =C-c <right>= to switch between window configurations. This is handy when something has popped up a buffer that you want to look at briefly before returning to whatever you were working on. When you're done, press =C-c <left>=.
+
+#+BEGIN_SRC emacs-lisp
+  (winner-mode 1)
+  (global-set-key (kbd "C-c w u") 'winner-undo)
+  (global-set-key (kbd "C-c w r") 'winner-redo)
+#+END_SRC
+
+*** Silver searcher
+
+The silver searcher is a code searching tool with a focus on speed.
+
+#+BEGIN_SRC emacs-lisp
+  (use-package helm-ag
+    :bind (("C-c s d" . helm-ag)                ; Search recursively
+           ("C-c s f" . helm-ag-this-file)      ; Search file
+           ("C-c s p" . helm-ag-project-root))) ; Search project recursively
+#+END_SRC
+
+*** Helm projectile
+
+A fast way to find files within projects.
+
+#+BEGIN_SRC emacs-lisp
+  (use-package helm-projectile
+    :ensure t
+    :init
+    (projectile-global-mode)
+    (helm-projectile-on)
+    :config
+    (setq projectile-completion-system 'helm)
+    ;; (setq projectile-switch-project-action 'helm-projectile)
+    :bind (("C-c m" . projectile-compile-project)
+           ("C-c j" . next-error)))
+#+END_SRC
+
+*** Pre-defined window layouts
+
+#+BEGIN_SRC emacs-lisp
+  (defun my-window-set-width (n)
+    "Set the selected window's width."
+    (adjust-window-trailing-edge (selected-window) (- n (window-width)) t))
+
+  (defun my-window-set-82 ()
+    "Set the selected window to 82 columns."
+    (interactive)
+    (my-window-set-width 82))
+
+  (global-set-key (kbd "C-c w ~") 'my-window-set-82)
+#+END_SRC
+
+Three equal sized columns for C code editing plus a narrow compilation window.
+
+#+BEGIN_SRC emacs-lisp
+  (defun my-window-split-4 ()
+    "Split the workspace into three coding windows and one compilation window."
+    (interactive)
+    (delete-other-windows)
+    (split-window-right 85)
+    (other-window 1)
+    (split-window-right 85)
+    (other-window 1)
+    (split-window-right 85)
+    (other-window 1)
+    (switch-to-buffer "*compilation*" nil t)
+    (my-window-toggle-dedicated)
+    )
+  (global-set-key (kbd "C-c w 4") 'my-window-split-4)
+#+END_SRC
+
+*** Dedicated window
+
+#+BEGIN_SRC emacs-lisp
+  (defun my-window-toggle-dedicated ()
+    "Toggle whether the current active window is dedicated or not"
+    (interactive)
+    (message
+     (if (let (window (get-buffer-window (current-buffer)))
+           (set-window-dedicated-p window
+                                   (not (window-dedicated-p window))))
+         "Window '%s' is dedicated"
+       "Window '%s' is normal")
+     (current-buffer)))
+
+  (global-set-key (kbd "<pause>") 'my-window-toggle-dedicated)
+  (global-set-key (kbd "C-c w d") 'my-window-toggle-dedicated)
+#+END_SRC
+
+*** Scrolling
+
+Scroll without moving point.
+
+#+BEGIN_SRC emacs-lisp
+  (global-set-key (kbd "M-n") (lambda () (interactive) (scroll-up   4)))
+  (global-set-key (kbd "M-p") (lambda () (interactive) (scroll-down 4)))
+#+END_SRC
+
+*** Bury buffer
+
+#+BEGIN_SRC emacs-lisp
+  (global-set-key (kbd "C-c y") 'bury-buffer)
+#+END_SRC
+** Coding
+*** C
+
+#+BEGIN_SRC emacs-lisp
+  (add-hook 'c-mode-common-hook
+            (lambda ()
+                  ;(semantic-mode 1)
+                  (c-set-style "bsd")
+                  (c-set-offset 'case-label '+)
+                  (c-set-offset 'statement-cont '0)
+                  (c-set-offset 'cpp-define-intro '0)
+                  (c-set-offset 'inextern-lang '0)
+                  (setq c-basic-offset 4
+                        tab-width 4
+                        indent-tabs-mode nil
+                        fill-column 80
+                        c-block-comment-prefix "*  "
+                        c-doc-comment-style '((java-mode . javadoc) (pike-mode . autodoc) (c-mode . javadoc))
+                        c-doc-comment-style 'javadoc)
+                  (local-set-key (kbd "C-c o")       'ff-find-other-file)
+                  (local-set-key (kbd "C-c <right>") 'hs-show-block)
+                  (local-set-key (kbd "C-c <left>")  'hs-hide-block)
+                  (local-set-key (kbd "C-c C-k")     'hs-toggle-hiding)
+                  (local-set-key (kbd "C-c <up>")    'hs-hide-all)
+                  (local-set-key (kbd "C-c <down>")  'hs-show-all)
+                  (local-set-key (kbd "C-j")         'newline)
+                  (local-set-key (kbd "C-d")         'delete-forward-char)
+                  ))
+#+END_SRC
+
+*** Go
+*** Javascript
+** Org
+*** Keyboard shortcuts
+
+#+BEGIN_SRC emacs-lisp
+  (global-set-key (kbd "C-c i")
+                  (lambda()
+                    (interactive)
+                    (org-babel-load-file "~/.emacs.d/config.org")))
+#+END_SRC
+
+** Emacs server
+
+#+BEGIN_SRC emacs-lisp
+  (when window-system
+    (require 'server)
+    (or (server-running-p)
+        (server-start)))
+  ;; (use-package edit-server
+  ;;   :init
+  ;;   (add-hook 'after-init-hook 'server-start t)
+  ;;   (add-hook 'after-init-hook 'edit-server-start t))
+#+END_SRC
+* Things still todo
+** TODO =C-d= delete text without going to kill ring

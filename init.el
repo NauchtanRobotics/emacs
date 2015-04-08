@@ -1,55 +1,40 @@
-(when (>= emacs-major-version 24)
-  (require 'package)
-  (setq package-archives
-        '(
-          ("ELPA" . "http://tromey.com/elpa/")
-          ("gnu" . "http://elpa.gnu.org/packages/")
-          ("marmalade" . "http://marmalade-repo.org/packages/")
-          ("melpa" . "http://melpa.org/packages/")
-          ))
-  (package-initialize)
-  )
+;; (require 'package)
+;; (add-to-list 'package-archives '("marmalade" . "https://marmalade-repo.org/packages/"))
 
-(when (not package-archive-contents)
-  (package-refresh-contents))
+;; (defvar brd-packages
+;;   '(
+;;     better-defaults
+;;     ))
 
-;; Packages to be installed.
-(defvar my-packages
-  '(
-    bm
-    expand-region
-    emmet-mode
-    gtags
-    lusty-explorer
-    org
-    starter-kit
-    starter-kit-bindings
-    yasnippet
-    zencoding-mode
-    )
-  "A list of packages to ensure are installed at launch.")
+;; (package-initialize)
 
-;; Old packages...
+;; ;; Install all packages.
+;; (dolist (p brd-packages)
+;;   (when (not (package-installed-p p))
+;;     (package-install p)))
 
+;;; init.el --- Where all the magic begins
+;;
+;; This file loads Org-mode and then loads the rest of our Emacs
+;; initialization from Emacs lisp embedded in literate Org-mode files.
 
-;; Install packages.
-(dolist (p my-packages)
-  (when (not (package-installed-p p))
-    (package-install p)))
+;; Load up Org Mode and (now included) Org Babel for elisp embedded in
+;; Org Mode files
+(setq dotfiles-dir (file-name-directory (or (buffer-file-name) load-file-name)))
 
-;; Load my configuration files. This must be done after all other
-;; packages have been loaded by package-initialize.
-(setq dotfiles-dir (file-name-directory
-                    (or (buffer-file-name) load-file-name)))
+(let* ((org-dir (expand-file-name
+		 "lisp" (expand-file-name
+			 "org" (expand-file-name
+				"src" dotfiles-dir))))
+       (org-contrib-dir (expand-file-name
+			 "lisp" (expand-file-name
+				 "contrib" (expand-file-name
+					    ".." org-dir))))
+       (load-path (append (list org-dir org-contrib-dir)
+			  (or load-path nil))))
+  ;; load up Org-mode and Org-babel
+  (require 'org-install)
+  (require 'ob-tangle))
 
-(setq custom-file (concat dotfiles-dir "custom.el"))
-(load custom-file 'noerror)
-
-(add-to-list 'load-path (concat dotfiles-dir "/packages"))
-(add-to-list 'load-path (concat dotfiles-dir "/packages/evil"))
-(add-to-list 'load-path (concat dotfiles-dir "rc"))
-
-(load (concat dotfiles-dir "rc/rc.el"))
-(mapc #'load (directory-files (concat dotfiles-dir "rc") nil ".el$"))
-(put 'narrow-to-region 'disabled nil)
-(put 'dired-find-alternate-file 'disabled nil)
+;; load up all literate org-mode files in this directory
+(mapc #'org-babel-load-file (directory-files dotfiles-dir t "\\.org$"))
