@@ -184,7 +184,9 @@ Helm makes it easy to complete various things.
             helm-split-window-in-side-p t
             helm-full-frame t)
       (helm-mode))
-    :bind (("C-c h" . helm-mini)
+    :bind (("<tab>" . helm-execute-persistent-action)
+           ("C-z" . helm-select-action)
+           ("C-c h" . helm-mini)
            ("C-h a" . helm-apropos)
            ("C-x C-b" . helm-buffers-list)
            ("C-x b" . helm-buffers-list)
@@ -222,6 +224,9 @@ Lazy people like me never want to type "yes" when "y" will suffice.
 
   (eval-after-load 'color-theme
     '(progn
+       (set-default-font "Consolas 8")
+       (add-to-list 'default-frame-alist '(font . "Consolas 8"))
+       ;; (set-face-attribute 'default nil :height 80)
        (add-to-list 'custom-theme-load-path (concat my-dotfiles-directory "themes"))
        (load-theme 'zenburn t)))
 #+END_SRC
@@ -314,8 +319,8 @@ For some reason I find it easier to visualise splitting windows with pipe and un
 
 #+BEGIN_SRC emacs-lisp
   (winner-mode 1)
-  (global-set-key (kbd "C-c p") 'winner-undo)
-  (global-set-key (kbd "C-c P") 'winner-redo)
+  (global-set-key (kbd "C-c w u") 'winner-undo)
+  (global-set-key (kbd "C-c w r") 'winner-redo)
 #+END_SRC
 
 *** Silver searcher
@@ -327,6 +332,48 @@ The silver searcher is a code searching tool with a focus on speed.
     :bind (("C-c s d" . helm-ag)                ; Search recursively
            ("C-c s f" . helm-ag-this-file)      ; Search file
            ("C-c s p" . helm-ag-project-root))) ; Search project recursively
+#+END_SRC
+
+*** Helm projectile
+
+A fast way to find files within projects.
+
+#+BEGIN_SRC emacs-lisp
+  (use-package helm-projectile
+    :ensure t
+    :config
+    (projectile-global-mode)
+    (setq projectile-completion-system 'helm)
+    (helm-projectile-on))
+#+END_SRC
+
+*** Fixed window configurations
+
+#+BEGIN_SRC emacs-lisp
+  (defun my-window-set-width (n)
+    "Set the selected window's width."
+    (adjust-window-trailing-edge (selected-window) (- n (window-width)) t))
+
+  (defun my-window-set-82 ()
+    "Set the selected window to 82 columns."
+    (interactive)
+    (my-window-set-width 82))
+
+  (defun my-window-split-4 ()
+    "Split the workspace into three coding windows and one compilation window."
+    (interactive)
+    (delete-other-windows)
+    (split-window-right 85)
+    (other-window 1)
+    (split-window-right 85)
+    (other-window 1)
+    (split-window-right 85)
+    (other-window 1)
+    (switch-to-buffer "*compilation*" nil t)
+    )
+
+  (global-set-key (kbd "C-c w ~") 'my-window-set-82)
+  (global-set-key (kbd "C-c w 4") 'my-window-split-4)
 #+END_SRC
 
 ** Coding
