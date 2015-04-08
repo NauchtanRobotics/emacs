@@ -309,6 +309,14 @@ Use =cua-mode= for rectangles only.
   (global-set-key (kbd "C-c r") 'cua-set-rectangle-mark)
 #+END_SRC
 
+*** Compilation
+
+Stop the compilation window on the first error.
+
+#+BEGIN_SRC emacs-lisp
+  (setq compilation-scroll-output 'first-error)
+#+END_SRC
+
 ** Navigation and windows
 *** Split windows
 
@@ -341,6 +349,8 @@ The silver searcher is a code searching tool with a focus on speed.
 
 #+BEGIN_SRC emacs-lisp
   (use-package helm-ag
+    :config
+    (setq helm-ag-insert-at-point 'symbol)
     :bind (("C-c s d" . helm-ag)                ; Search recursively
            ("C-c s f" . helm-ag-this-file)      ; Search file
            ("C-c s p" . helm-ag-project-root))) ; Search project recursively
@@ -523,4 +533,5 @@ Scroll without moving point.
   ;;   (add-hook 'after-init-hook 'edit-server-start t))
 #+END_SRC
 * Things still todo
-** TODO =C-d= delete text without going to kill ring
+** TODO =C-d= delete text without going to kill ring.
+This has something to do with cua mode (I think).
