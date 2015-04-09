@@ -137,6 +137,7 @@ Visual line mode is used to wrap long lines. It rebinds =C-a=, =C-e=, and =C-k= 
 #+BEGIN_SRC emacs-lisp
   (remove-hook 'text-mode-hook #'turn-on-auto-fill)
   (add-hook 'text-mode-hook 'turn-on-visual-line-mode)
+  (add-hook 'text-mode-hook 'flyspell-mode)
 #+END_SRC
 
 *** Toggle line wrapping
@@ -280,13 +281,13 @@ Delete trailing whitespace when the file is saved.
 
 X generally distinguishes between two types of selection, the /primary/ and the /clipboard/. Every time you select a piece of text with the mouse, the selected text is set as the /primary/ selection. Using the copy function will place the selected text into the /clipboard/. Pasting using the middle mouse button will insert the /primary/ selection, pasting using the paste function will insert the /clipboard/.
 
-Set =x-select-enable-primary= so that the Emacs commands =C-w= and =C-y= to use the /primary/ selection. Set =x-select-enable-clipboard= so that the Emacs commands =C-w= and =C-y= to use the /clipboard/ selection. =save-interprogram-paste-before-kill= saves the clipboard contents to the killring before Emacs puts text in the clipboard.
+Disable =x-select-enable-primary= so that selecting text in Emacs does not automatically add it to the /primary/ selection. Set =x-select-enable-clipboard= so that the Emacs commands =C-w= and =C-y= to use the /clipboard/ selection. =save-interprogram-paste-before-kill= saves the clipboard contents to the killring before Emacs puts text in the clipboard.
 
 =mouse-yank-at-point= ensures text pasted with the mouse is inserted at point and not where the mouse was clicked.
 
 #+BEGIN_SRC emacs-lisp
   (setq x-select-enable-clipboard t
-        x-select-enable-primary t
+        x-select-enable-primary nil
         save-interprogram-paste-before-kill t
         mouse-yank-at-point t)
 #+END_SRC
@@ -315,6 +316,12 @@ Stop the compilation window on the first error.
 
 #+BEGIN_SRC emacs-lisp
   (setq compilation-scroll-output 'first-error)
+#+END_SRC
+
+*** Spelling
+
+#+BEGIN_SRC emacs-lisp
+  (setq ispell-personal-dictionary (concat my-dotfiles-directory "dictionary"))
 #+END_SRC
 
 ** Navigation and windows
@@ -403,6 +410,13 @@ Integrate /GNU Global/ with helm.
   (use-package helm-swoop)
 #+END_SRC
 
+*** Helm spelling
+
+#+BEGIN_SRC emacs-lisp
+  (use-package helm-flyspell)
+  (global-set-key (kbd "M-$") 'helm-flyspell-correct)
+#+END_SRC
+
 *** Pre-defined window layouts
 
 #+BEGIN_SRC emacs-lisp
@@ -464,11 +478,20 @@ Scroll without moving point.
   (global-set-key (kbd "M-p") (lambda () (interactive) (scroll-down 4)))
 #+END_SRC
 
-*** Bury buffer
+*** Buffer manipulation
+
+Easily bury a buffer.
 
 #+BEGIN_SRC emacs-lisp
   (global-set-key (kbd "C-c y") 'bury-buffer)
 #+END_SRC
+
+Revert a buffer.
+
+#+BEGIN_SRC emacs-lisp
+    (global-set-key (kbd "<f5>") '(lambda () (interactive) (revert-buffer nil t nil)))
+#+END_SRC
+
 ** Coding
 *** C
 
@@ -516,6 +539,12 @@ Scroll without moving point.
 
 #+END_SRC
 
+*** Julia
+
+#+BEGIN_SRC emacs-lisp
+  (use-package julia-mode)
+#+END_SRC
+
 ** Org
 *** Keyboard shortcuts
 
@@ -539,5 +568,3 @@ Scroll without moving point.
   ;;   (add-hook 'after-init-hook 'edit-server-start t))
 #+END_SRC
 * Things still todo
-** TODO =C-d= delete text without going to kill ring.
-This has something to do with cua mode (I think).
