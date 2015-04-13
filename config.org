@@ -357,7 +357,7 @@ The silver searcher is a code searching tool with a focus on speed.
 #+BEGIN_SRC emacs-lisp
   (use-package helm-ag
     :config
-    (setq helm-ag-insert-at-point 'symbol)
+    (setq helm-ag-insert-at-point nil)
     :bind (("C-c s d" . helm-ag)                ; Search recursively
            ("C-c s f" . helm-ag-this-file)      ; Search file
            ("C-c s p" . helm-ag-project-root))) ; Search project recursively
