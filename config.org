@@ -136,8 +136,18 @@ Visual line mode is used to wrap long lines. It rebinds =C-a=, =C-e=, and =C-k= 
 
 #+BEGIN_SRC emacs-lisp
   (remove-hook 'text-mode-hook #'turn-on-auto-fill)
-  (add-hook 'text-mode-hook 'turn-on-visual-line-mode)
-  (add-hook 'text-mode-hook 'flyspell-mode)
+
+  (defun my-text-mode-hook ()
+    "Configure text mode to my tastes."
+    (interactive)
+    (turn-on-visual-line-mode)
+    (flyspell-mode)
+    (setq fill-column 80))
+
+  (add-hook 'text-mode-hook 'my-text-mode-hook)
+
+  ;; (add-hook 'text-mode-hook 'turn-on-visual-line-mode)
+  ;; (add-hook 'text-mode-hook 'flyspell-mode)
 #+END_SRC
 
 *** Toggle line wrapping
@@ -182,7 +192,7 @@ Helm makes it easy to complete various things.
     :init
     (progn
       (require 'helm-config)
-      (setq helm-candidate-number-limit 100)
+      (setq helm-candidate-number-limit 1000)
       ;; From https://gist.github.com/antifuchs/9238468
       (setq helm-idle-delay 0.0 ; update fast sources immediately (doesn't).
             helm-input-idle-delay 0.01    ; this actually updates things
@@ -324,6 +334,29 @@ Stop the compilation window on the first error.
   (setq ispell-personal-dictionary (concat my-dotfiles-directory "dictionary"))
 #+END_SRC
 
+*** Snippets
+
+YASnippet is a template system for Emacs. It allows you to type an abbreviation and automatically expand it into function templates.
+
+#+BEGIN_SRC emacs-lisp
+  (use-package yasnippet
+    :ensure t
+    :init
+    (progn
+      (setq yas-snippet-dirs
+            (concat my-dotfiles-directory "snippets"))
+    )
+    :config
+    (yas-global-mode 1)
+    )
+#+END_SRC
+
+*** Git commit message
+
+#+BEGIN_SRC emacs-lisp
+  (add-to-list 'auto-mode-alist '("COMMIT_EDITMSG" . text-mode))
+#+END_SRC
+
 ** Navigation and windows
 *** Split windows
 
@@ -401,6 +434,7 @@ Integrate /GNU Global/ with helm.
     (define-key helm-gtags-mode-map (kbd "M-,") 'helm-gtags-pop-stack)
     (define-key helm-gtags-mode-map (kbd "C-c <") 'helm-gtags-previous-history)
     (define-key helm-gtags-mode-map (kbd "C-c >") 'helm-gtags-next-history)
+    (define-key helm-gtags-mode-map (kbd "C-t") nil)
     )
 #+END_SRC
 
@@ -492,6 +526,20 @@ Revert a buffer.
     (global-set-key (kbd "<f5>") '(lambda () (interactive) (revert-buffer nil t nil)))
 #+END_SRC
 
+*** Visible bookmarks
+
+#+BEGIN_SRC emacs-lisp
+  (use-package bm
+    :bind (("C-c b b" . bm-toggle)
+           ("C-<f2>" . bm-toggle)
+           ("<f2>" . bm-next)
+           ("C-c b <space>" . bm-next)
+           ("C-c b C-<space>" . bm-previous))
+    :init
+    (setq bm-highlight-style 'bm-highlight-only-fringe)
+    )
+#+END_SRC
+
 ** Coding
 *** C
 
@@ -528,6 +576,19 @@ Revert a buffer.
 
 *** Go
 *** Javascript
+
+#+BEGIN_SRC emacs-lisp
+  (use-package js2-mode
+    :ensure t
+    :commands js2-mode
+    :init
+     (progn
+      (add-to-list 'auto-mode-alist '("\\.js$" . js2-mode))
+      (setq-default js2-basic-offset 2)
+      (add-to-list 'interpreter-mode-alist (cons "node" 'js2-mode)))
+  )
+#+END_SRC
+
 *** Markdown
 
 #+BEGIN_SRC emacs-lisp
@@ -537,6 +598,13 @@ Revert a buffer.
           "\\.md\\'")
     )
 
+#+END_SRC
+
+*** Python
+
+#+BEGIN_SRC emacs-lisp
+  (setq python-shell-interpreter "ipython"
+        python-shell-interpreter-args "-i")
 #+END_SRC
 
 *** Julia
