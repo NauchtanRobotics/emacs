@@ -600,6 +600,18 @@ Revert a buffer.
 
 #+END_SRC
 
+*** Textile
+
+#+BEGIN_SRC emacs-lisp
+
+  (use-package textile-mode
+    :init
+    (progn
+      (add-to-list 'auto-mode-alist '("\\.textile$" . textile-mode))
+      ))
+
+#+END_SRC
+
 *** Python
 
 #+BEGIN_SRC emacs-lisp
@@ -630,9 +642,10 @@ Revert a buffer.
     (require 'server)
     (or (server-running-p)
         (server-start)))
-  ;; (use-package edit-server
-  ;;   :init
-  ;;   (add-hook 'after-init-hook 'server-start t)
-  ;;   (add-hook 'after-init-hook 'edit-server-start t))
+
+  (use-package edit-server
+    :if window-system
+    :init
+    (add-hook 'after-init-hook 'edit-server-start t))
 #+END_SRC
 * Things still todo
