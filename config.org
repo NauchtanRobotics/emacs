@@ -150,6 +150,10 @@ Visual line mode is used to wrap long lines. It rebinds =C-a=, =C-e=, and =C-k= 
   ;; (add-hook 'text-mode-hook 'flyspell-mode)
 #+END_SRC
 
+#+BEGIN_SRC emacs-lisp
+  (global-set-key (kbd "M-Q") 'fill-region)
+#+END_SRC
+
 *** Toggle line wrapping
 
 Easily turn on and off line wrapping.
