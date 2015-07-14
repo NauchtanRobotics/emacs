@@ -4,7 +4,7 @@
 
 ;; Author: Syohei YOSHIDA <syohex@gmail.com>
 ;; URL: https://github.com/syohex/emacs-helm-ag
-;; Version: 0.37
+;; Version: 0.39
 ;; Package-Requires: ((helm "1.5.6") (cl-lib "0.5"))
 
 ;; This program is free software; you can redistribute it and/or modify
@@ -31,6 +31,7 @@
 (require 'cl-lib)
 (require 'helm)
 (require 'helm-utils)
+(require 'compile)
 
 (declare-function helm-read-file-name "helm-mode")
 (declare-function helm-grep-get-file-extensions "helm-grep")
@@ -40,7 +41,13 @@
   "the silver searcher with helm interface"
   :group 'helm)
 
-(defcustom helm-ag-base-command "ag --nocolor --nogroup"
+(defsubst helm-ag--windows-p ()
+  (memq system-type '(ms-dos windows-nt)))
+
+(defcustom helm-ag-base-command
+  (if (helm-ag--windows-p)
+      "ag --nocolor --nogroup --line-numbers"
+    "ag --nocolor --nogroup")
   "Base command of `ag'"
   :type 'string
   :group 'helm-ag)
@@ -88,6 +95,11 @@ They are specified to `--ignore' options."
   :type 'boolean
   :group 'helm-ag)
 
+(defcustom helm-ag-use-emacs-lisp-regexp nil
+  "[Experimental] Use Emacs Lisp regexp instead of PCRE."
+  :type 'boolean
+  :group 'helm-ag)
+
 (defvar helm-ag--command-history '())
 (defvar helm-ag--context-stack nil)
 (defvar helm-ag--default-directory nil)
@@ -101,6 +113,7 @@ They are specified to `--ignore' options."
 (defvar helm-ag--search-this-file-p nil)
 (defvar helm-do-ag--default-target nil)
 (defvar helm-do-ag--extensions nil)
+(defvar helm-ag--buffer-search nil)
 
 (defun helm-ag--save-current-context ()
   (let ((curpoint (with-helm-current-buffer
@@ -147,6 +160,11 @@ They are specified to `--ignore' options."
             (list query)
           (nconc (nreverse options) (list query)))))))
 
+(defsubst helm-ag--file-visited-buffers ()
+  (cl-loop for buf in (buffer-list)
+           when (buffer-file-name buf)
+           collect (buffer-file-name buf)))
+
 (defun helm-ag--construct-command (this-file)
   (let* ((commands (split-string helm-ag-base-command nil t))
          (command (car commands))
@@ -162,6 +180,8 @@ They are specified to `--ignore' options."
     (setq args (append args (helm-ag--parse-query helm-ag--last-query)))
     (when this-file
       (setq args (append args (list this-file))))
+    (when helm-ag--buffer-search
+      (setq args (append args (helm-ag--file-visited-buffers))))
     (cons command args)))
 
 (defun helm-ag--init ()
@@ -230,8 +250,22 @@ They are specified to `--ignore' options."
     (goto-char (point-min))
     (while (re-search-forward "[(){}|]" nil t)
       (backward-char 1)
-      (cond ((looking-back "\\\\\\\\"))
-            ((looking-back "\\\\")
+      (cond ((looking-back "\\\\\\\\" nil))
+            ((looking-back "\\\\" nil)
+             (delete-char -1))
+            (t
+             (insert "\\")))
+      (forward-char 1))
+    (buffer-string)))
+
+(defun helm-ag--elisp-regexp-to-pcre (regexp)
+  (with-temp-buffer
+    (insert regexp)
+    (goto-char (point-min))
+    (while (re-search-forward "[(){}|]" nil t)
+      (backward-char 1)
+      (cond ((looking-back "\\\\\\\\" nil))
+            ((looking-back "\\\\" nil)
              (delete-char -1))
             (t
              (insert "\\")))
@@ -283,7 +317,8 @@ They are specified to `--ignore' options."
 
 (defvar helm-ag--actions
   '(("Open file" . helm-ag--action-find-file)
-    ("Open file other window" . helm-ag--action--find-file-other-window)))
+    ("Open file other window" . helm-ag--action--find-file-other-window)
+    ("Save results in buffer" . helm-ag--action-save-buffer)))
 
 (defvar helm-ag-source
   (helm-build-in-buffer-source "The Silver Searcher"
@@ -324,11 +359,18 @@ They are specified to `--ignore' options."
       'helm-ag-source-grep
     'helm-ag-source))
 
+(defsubst helm-ag--marked-input ()
+  (when (use-region-p)
+    (buffer-substring-no-properties (region-beginning) (region-end))))
+
 (defun helm-ag--query ()
   (let* ((searched-word (helm-ag--searched-word))
-         (query (read-string "Pattern: " searched-word 'helm-ag--command-history)))
+         (marked-word (helm-ag--marked-input))
+         (query (read-string "Pattern: " (or marked-word searched-word) 'helm-ag--command-history)))
     (when (string= query "")
       (error "Input is empty!!"))
+    (when helm-ag-use-emacs-lisp-regexp
+      (setq query (helm-ag--elisp-regexp-to-pcre query)))
     (setq helm-ag--last-query query
           helm-ag--elisp-regexp-query (helm-ag--pcre-to-elisp-regexp query))
     (setq helm-ag--valid-regexp-for-emacs
@@ -360,7 +402,9 @@ They are specified to `--ignore' options."
     default-directory))
 
 (defsubst helm-ag--helm-header (dir)
-  (concat "Search at " (abbreviate-file-name dir)))
+  (if helm-ag--buffer-search
+      "Search Buffers"
+    (concat "Search at " (abbreviate-file-name dir))))
 
 (defun helm-ag--run-other-window-action ()
   (interactive)
@@ -408,43 +452,46 @@ They are specified to `--ignore' options."
     map))
 
 (defun helm-ag--edit (_candidate)
-  (with-current-buffer (get-buffer-create "*helm-ag-edit*")
-    (erase-buffer)
-    (setq-local helm-ag--default-directory helm-ag--default-directory)
-    (let (buf-content)
-      (with-current-buffer (get-buffer "*helm-ag*")
-        (goto-char (point-min))
-        (forward-line 1)
-        (let* ((body-start (point))
-               (marked-lines (cl-loop for ov in (overlays-in body-start (point-max))
-                                      when (eq 'helm-visible-mark (overlay-get ov 'face))
-                                      return (helm-marked-candidates))))
-          (if (not marked-lines)
-              (setq buf-content (buffer-substring-no-properties
-                                 body-start (point-max)))
-            (setq buf-content (concat (mapconcat 'identity marked-lines "\n") "\n")))))
-      (insert buf-content)
-      (add-text-properties (point-min) (point-max)
-                           '(read-only t rear-nonsticky t front-sticky t))
-      (let ((inhibit-read-only t))
-        (setq header-line-format
-              (format "[%s] C-c C-c: Commit, C-c C-k: Abort"
-                      (abbreviate-file-name helm-ag--default-directory)))
-        (goto-char (point-min))
-        (while (re-search-forward "^\\(\\(?:[^:]+:\\)\\{1,2\\}\\)\\(.*\\)$" nil t)
-          (let ((file-line-begin (match-beginning 1))
-                (file-line-end (match-end 1))
-                (body-begin (match-beginning 2))
-                (body-end (match-end 2)))
-            (add-text-properties file-line-begin file-line-end
-                                 '(face font-lock-function-name-face
-                                        intangible t))
-            (remove-text-properties body-begin body-end '(read-only t))
-            (set-text-properties body-end (1+ body-end)
-                                 '(read-only t rear-nonsticky t)))))))
+  (let ((default-directory helm-ag--default-directory))
+    (with-current-buffer (get-buffer-create "*helm-ag-edit*")
+      (erase-buffer)
+      (setq-local helm-ag--default-directory helm-ag--default-directory)
+      (let (buf-content)
+        (with-current-buffer (get-buffer "*helm-ag*")
+          (goto-char (point-min))
+          (forward-line 1)
+          (let* ((body-start (point))
+                 (marked-lines (cl-loop for ov in (overlays-in body-start (point-max))
+                                        when (eq 'helm-visible-mark (overlay-get ov 'face))
+                                        return (helm-marked-candidates))))
+            (if (not marked-lines)
+                (setq buf-content (buffer-substring-no-properties
+                                   body-start (point-max)))
+              (setq buf-content (concat (mapconcat 'identity marked-lines "\n") "\n")))))
+        (insert buf-content)
+        (add-text-properties (point-min) (point-max)
+                             '(read-only t rear-nonsticky t front-sticky t))
+        (let ((inhibit-read-only t))
+          (setq header-line-format
+                (format "[%s] C-c C-c: Commit, C-c C-k: Abort"
+                        (abbreviate-file-name helm-ag--default-directory)))
+          (goto-char (point-min))
+          (while (re-search-forward "^\\(\\(?:[^:]+:\\)\\{1,2\\}\\)\\(.*\\)$" nil t)
+            (let ((file-line-begin (match-beginning 1))
+                  (file-line-end (match-end 1))
+                  (body-begin (match-beginning 2))
+                  (body-end (match-end 2)))
+              (add-text-properties file-line-begin file-line-end
+                                   '(face font-lock-function-name-face
+                                          intangible t))
+              (remove-text-properties body-begin body-end '(read-only t))
+              (set-text-properties body-end (1+ body-end)
+                                   '(read-only t rear-nonsticky t))))))))
   (other-window 1)
   (switch-to-buffer (get-buffer "*helm-ag-edit*"))
   (goto-char (point-min))
+  (setq next-error-function 'compilation-next-error-function)
+  (setq-local compilation-locs (make-hash-table :test 'equal :weakness 'value))
   (use-local-map helm-ag-edit-map))
 
 (defun helm-ag-edit ()
@@ -492,8 +539,11 @@ Special commands:
 \\{helm-ag-mode-map}")
 
 (defun helm-ag--save-results (_unused)
-  (let ((buf "*helm ag results*")
+  (let ((default-directory helm-ag--default-directory)
+        (buf "*helm ag results*")
         search-this-file-p)
+    (when (buffer-live-p (get-buffer buf))
+      (kill-buffer buf))
     (with-current-buffer (get-buffer-create buf)
       (setq buffer-read-only t)
       (let ((inhibit-read-only t))
@@ -510,7 +560,10 @@ Special commands:
       (setq-local helm-ag--default-directory helm-ag--default-directory)
       (helm-ag-mode)
       (pop-to-buffer buf))
-    (message "Helm Grep Results saved in `%s' buffer" buf)))
+    (message "Helm Ag Results saved in `%s' buffer" buf)))
+
+(defun helm-ag--action-save-buffer (arg)
+  (helm-ag--save-results arg))
 
 (defun helm-ag--run-save-buffer ()
   (interactive)
@@ -541,6 +594,7 @@ Special commands:
          (lambda ()
            (let ((default-directory parent)
                  (source (helm-ag--select-source)))
+             (setq helm-ag--last-default-directory default-directory)
              (helm-attrset 'name (helm-ag--helm-header default-directory)
                            (symbol-value source))
              (helm :sources (list source) :buffer "*helm-ag*"
@@ -611,6 +665,8 @@ Special commands:
     (when helm-do-ag--extensions
       (setq cmds (append cmds (helm-ag--construct-extension-options))))
     (setq cmds (append cmds (list "--" pattern)))
+    (when helm-ag--buffer-search
+      (setq cmds (append cmds (helm-ag--file-visited-buffers))))
     (if helm-do-ag--default-target
         (append cmds (helm-ag--construct-targets helm-do-ag--default-target))
       cmds)))
@@ -675,6 +731,7 @@ Special commands:
         (helm-run-after-quit
          (lambda ()
            (let ((default-directory parent))
+             (setq helm-ag--last-default-directory default-directory)
              (helm-attrset 'name (helm-ag--helm-header parent)
                            helm-source-do-ag)
              (helm :sources '(helm-source-do-ag) :buffer "*helm-ag*"
@@ -692,6 +749,14 @@ Special commands:
   (when (helm-ag--has-c-u-preffix-p)
     (helm-grep-get-file-extensions helm-do-ag--default-target)))
 
+(defsubst helm-do-ag--is-target-one-directory-p (targets)
+  (and (listp targets) (= (length targets) 1) (file-directory-p (car targets))))
+
+(defsubst helm-do-ag--helm ()
+  (helm :sources '(helm-source-do-ag) :buffer "*helm-ag*"
+        :input (helm-ag--insert-thing-at-point helm-ag-insert-at-point)
+        :keymap helm-do-ag-map))
+
 ;;;###autoload
 (defun helm-do-ag (&optional basedir)
   (interactive)
@@ -700,18 +765,26 @@ Special commands:
   (setq helm-ag--original-window (selected-window))
   (helm-ag--clear-variables)
   (let* ((helm-ag--default-directory (or basedir default-directory))
-         (helm-do-ag--default-target (or basedir (helm-read-file-name
-                                                  "Search in file(s): "
-                                                  :default default-directory
-                                                  :marked-candidates t :must-match t)))
-         (helm-do-ag--extensions (helm-ag--do-ag-searched-extensions)))
+         (helm-do-ag--default-target (if (and (helm-ag--windows-p) basedir)
+                                         (list basedir)
+                                       (when (and (not basedir) (not helm-ag--buffer-search))
+                                         (helm-read-file-name
+                                          "Search in file(s): "
+                                          :default default-directory
+                                          :marked-candidates t :must-match t))))
+         (helm-do-ag--extensions (helm-ag--do-ag-searched-extensions))
+         (one-directory-p (helm-do-ag--is-target-one-directory-p
+                           helm-do-ag--default-target)))
     (helm-ag--set-do-ag-option)
     (helm-ag--save-current-context)
     (helm-attrset 'name (helm-ag--helm-header helm-ag--default-directory)
                   helm-source-do-ag)
-    (helm :sources '(helm-source-do-ag) :buffer "*helm-ag*"
-          :input (helm-ag--insert-thing-at-point helm-ag-insert-at-point)
-          :keymap helm-do-ag-map)))
+    (if (or (helm-ag--windows-p) (not one-directory-p)) ;; Path argument must be specified on Windows
+        (helm-do-ag--helm)
+      (let* ((helm-ag--default-directory
+              (file-name-as-directory (car helm-do-ag--default-target)))
+             (helm-do-ag--default-target nil))
+        (helm-do-ag--helm)))))
 
 (defun helm-ag--project-root ()
   (cl-loop for dir in '(".git/" ".hg/" ".svn/")
@@ -733,6 +806,18 @@ Special commands:
     (unless rootdir
       (error "Here is not repository"))
     (helm-do-ag rootdir)))
+
+;;;###autoload
+(defun helm-ag-buffers ()
+  (interactive)
+  (let ((helm-ag--buffer-search t))
+    (helm-ag)))
+
+;;;###autoload
+(defun helm-do-ag-buffers ()
+  (interactive)
+  (let ((helm-ag--buffer-search t))
+    (helm-do-ag)))
 
 (provide 'helm-ag)
 

@@ -392,12 +392,13 @@ For some reason I find it easier to visualise splitting windows with pipe and un
 The silver searcher is a code searching tool with a focus on speed.
 
 #+BEGIN_SRC emacs-lisp
-  (use-package helm-ag
-    :config
-    (setq helm-ag-insert-at-point nil)
-    :bind (("C-c s d" . helm-ag)                ; Search recursively
-           ("C-c s f" . helm-ag-this-file)      ; Search file
-           ("C-c s p" . helm-ag-project-root))) ; Search project recursively
+    (use-package helm-ag
+      :config
+      (setq helm-ag-insert-at-point t)
+      :bind (("C-c s r" . helm-ag)                ; Search recursively
+             ("C-c s f" . helm-ag-this-file)      ; Search file
+             ("C-c s d" . helm-do-ag)             ; Search specified directory
+             ("C-c s p" . helm-ag-project-root))) ; Search project recursively
 #+END_SRC
 
 *** Helm projectile
@@ -440,6 +441,14 @@ Integrate /GNU Global/ with helm.
     (define-key helm-gtags-mode-map (kbd "C-c >") 'helm-gtags-next-history)
     (define-key helm-gtags-mode-map (kbd "C-t") nil)
     )
+#+END_SRC
+
+*** Helm and Etags
+
+#+BEGIN_SRC emacs-lisp
+  (use-package helm-tags)
+  ;;(global-set-key (kbd "M-.") 'helm-etags-select)
+  (global-set-key (kbd "M-*") 'pop-tag-mark)
 #+END_SRC
 
 *** Helm swoop
@@ -551,7 +560,7 @@ Revert a buffer.
   (defun my-c-mode-common-hook ()
     "Configure C mode according to my tastes."
     (interactive)
-    (helm-gtags-mode)
+    ;(helm-gtags-mode)
     (c-set-style "bsd")
     (c-set-offset 'case-label '+)
     (c-set-offset 'statement-cont '0)
