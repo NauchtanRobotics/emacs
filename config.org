@@ -365,6 +365,10 @@ For some reason I find it easier to visualise splitting windows with pipe and un
 #+BEGIN_SRC emacs-lisp
   (global-set-key (kbd "C-x |") 'split-window-right)
   (global-set-key (kbd "C-x _") 'split-window-below)
+
+  ;; Make sure we always split vertically (side-by-side).
+  (setq split-height-threshold 1000)
+  (setq split-width-threshold 160)
 #+END_SRC
 
 *** Jumping between windows
