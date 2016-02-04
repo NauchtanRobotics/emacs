@@ -79,7 +79,6 @@ Store secrets in a file outside of source control.
 Use =M-x package-refresh-contents= to reload the list of packages after adding these for the first time.
 
 *** Add package directories
-
 Save to =my-init-file= and =my-dotfiles-directory= absolute path to the emacs configuration directory.
 
 #+BEGIN_SRC emacs-lisp
@@ -214,7 +213,7 @@ Helm makes it easy to complete various things.
            ("C-h a" . helm-apropos)
            ("C-x C-b" . helm-buffers-list)
            ("C-x b" . helm-buffers-list)
-           ("M-y" . helm-show-kill-ring)
+           ("M-Y" . helm-show-kill-ring)
            ("M-x" . helm-M-x)
            ("C-x C-f" . helm-find-files)
            ("C-c h o" . helm-occur)
@@ -291,6 +290,14 @@ Delete trailing whitespace when the file is saved.
   (add-hook 'before-save-hook 'delete-trailing-whitespace)
 #+END_SRC
 
+shrink-whitespace is a DWIM whitespace removal tool.
+
+#+BEGIN_SRC emacs-lisp
+  (use-package shrink-whitespace
+    :bind (("C-c C-d" . shrink-whitespace)))
+#+END_SRC
+
+
 *** Clipboard
 
 X generally distinguishes between two types of selection, the /primary/ and the /clipboard/. Every time you select a piece of text with the mouse, the selected text is set as the /primary/ selection. Using the copy function will place the selected text into the /clipboard/. Pasting using the middle mouse button will insert the /primary/ selection, pasting using the paste function will insert the /clipboard/.
@@ -361,6 +368,16 @@ YASnippet is a template system for Emacs. It allows you to type an abbreviation 
   (add-to-list 'auto-mode-alist '("COMMIT_EDITMSG" . text-mode))
 #+END_SRC
 
+*** Edit grep buffer
+
+wgrep allows you to edit a grep buffer and apply those changes to the file
+buffer.
+
+#+BEGIN_SRC emacs-lisp
+  (use-package wgrep-helm
+    )
+#+END_SRC
+
 ** Navigation and windows
 *** Split windows
 
@@ -391,18 +408,27 @@ For some reason I find it easier to visualise splitting windows with pipe and un
   (global-set-key (kbd "C-c w r") 'winner-redo)
 #+END_SRC
 
+Switch window overlays numbers on the windows to jump to a specific buffer.
+
+#+BEGIN_SRC emacs-lisp
+  (use-package switch-window
+    :bind (("C-x C-o" . switch-window))
+    )
+#+END_SRC
+
 *** Silver searcher
 
 The silver searcher is a code searching tool with a focus on speed.
 
 #+BEGIN_SRC emacs-lisp
-    (use-package helm-ag
-      :config
-      (setq helm-ag-insert-at-point t)
-      :bind (("C-c s r" . helm-ag)                ; Search recursively
-             ("C-c s f" . helm-ag-this-file)      ; Search file
-             ("C-c s d" . helm-do-ag)             ; Search specified directory
-             ("C-c s p" . helm-ag-project-root))) ; Search project recursively
+      (use-package helm-ag
+        :config
+        (setq helm-ag-insert-at-point t)
+        (setq helm-ag-use-agignore t)
+        :bind (("C-c s r" . helm-ag)                ; Search recursively
+               ("C-c s f" . helm-ag-this-file)      ; Search file
+               ("C-c s d" . helm-do-ag)             ; Search specified directory
+               ("C-c s p" . helm-ag-project-root))) ; Search project recursively
 #+END_SRC
 
 *** Helm projectile
@@ -557,38 +583,62 @@ Revert a buffer.
     )
 #+END_SRC
 
+** Revision Control
+*** Magit
+
+#+BEGIN_SRC emacs-lisp
+  (use-package magit-popup
+    :ensure t
+    )
+
+  (use-package magit
+    :ensure t
+    :commands magit-get-top-dir
+    :bind (("C-c g s" . magit-status)
+           ("C-c g l" . magit-file-log)
+           ("C-c g g" . magit-grep))
+    )
+#+END_SRC
+
 ** Coding
 *** C
 
 #+BEGIN_SRC emacs-lisp
-  (defun my-c-mode-common-hook ()
-    "Configure C mode according to my tastes."
-    (interactive)
-    ;(helm-gtags-mode)
-    (c-set-style "bsd")
-    (c-set-offset 'case-label '+)
-    (c-set-offset 'statement-cont '0)
-    (c-set-offset 'cpp-define-intro '0)
-    (c-set-offset 'inextern-lang '0)
-    (c-set-offset 'arglist-close '0)
-    (setq c-basic-offset 4
-          tab-width 4
-          indent-tabs-mode nil
-          fill-column 80
-          c-block-comment-prefix "*  "
-          c-doc-comment-style '((java-mode . javadoc) (pike-mode . autodoc) (c-mode . javadoc))
-          c-doc-comment-style 'javadoc)
-    (local-set-key (kbd "C-c o")       'ff-find-other-file)
-    (local-set-key (kbd "C-c <right>") 'hs-show-block)
-    (local-set-key (kbd "C-c <left>")  'hs-hide-block)
-    (local-set-key (kbd "C-c C-k")     'hs-toggle-hiding)
-    (local-set-key (kbd "C-c <up>")    'hs-hide-all)
-    (local-set-key (kbd "C-c <down>")  'hs-show-all)
-    (local-set-key (kbd "C-j")         'newline)
-    (local-set-key (kbd "C-d")         'delete-forward-char)
-    )
+    (defun my-c-mode-common-hook ()
+      "Configure C mode according to my tastes."
+      (interactive)
+      ;(helm-gtags-mode)
+      (hs-minor-mode t)
+      (c-set-style "bsd")
+      (c-set-offset 'case-label '+)
+      (c-set-offset 'statement-cont '0)
+      (c-set-offset 'cpp-define-intro '0)
+      (c-set-offset 'inextern-lang '0)
+      (c-set-offset 'arglist-close '0)
+      (setq c-basic-offset 4
+            tab-width 4
+            indent-tabs-mode nil
+            fill-column 80
+            c-block-comment-prefix "*  "
+            c-doc-comment-style '((java-mode . javadoc) (pike-mode . autodoc) (c-mode . javadoc))
+            c-doc-comment-style 'javadoc)
+      (local-set-key (kbd "C-c o")       'ff-find-other-file)
+      (local-set-key (kbd "C-c <right>") 'hs-show-block)
+      (local-set-key (kbd "C-c <left>")  'hs-hide-block)
+      (local-set-key (kbd "C-c C-k")     'hs-toggle-hiding)
+      (local-set-key (kbd "C-c <up>")    'hs-hide-all)
+      (local-set-key (kbd "C-c <down>")  'hs-show-all)
+      (local-set-key (kbd "C-j")         'newline)
+      (local-set-key (kbd "C-d")         'delete-forward-char)
 
-  (add-hook 'c-mode-common-hook 'my-c-mode-common-hook)
+      ;; The C-M-a keypress is being swallowed by Windows, VirtualBox, or
+      ;; Archlinux and never makes it as far as Emacs. Assign another
+      ;; chord.
+      (local-set-key (kbd "C-M-S-e")     'c-beginning-of-defun)
+      (local-set-key (kbd "C-M-e")       'c-end-of-defun)
+      )
+
+    (add-hook 'c-mode-common-hook 'my-c-mode-common-hook)
 #+END_SRC
 
 *** Go
@@ -604,6 +654,25 @@ Revert a buffer.
       (setq-default js2-basic-offset 2)
       (add-to-list 'interpreter-mode-alist (cons "node" 'js2-mode)))
   )
+#+END_SRC
+
+*** JSON
+
+#+BEGIN_SRC emacs-lisp
+  (use-package json-snatcher
+    :ensure t
+    :pin "marmalade")
+  (use-package json-reformat
+    :ensure t
+    :pin "marmalade")
+  (use-package json-mode
+    :ensure t
+    :pin "marmalade"
+    :commands json-mode
+    :init
+    (progn
+      (add-to-list 'auto-mode-alist '("\\.json$" . json-mode)))
+    )
 #+END_SRC
 
 *** Markdown
@@ -642,8 +711,18 @@ Revert a buffer.
   (use-package julia-mode)
 #+END_SRC
 
+*** COMMENT Writing
+
+=writeroom-mode= is a minor mode for Emacs that implements a distraction-free writing mode similar to the famous Writeroom editor for OS X
+
+#+BEGIN_SRC emacs-lisp
+  (use-package writeroom-mode)
+#+END_SRC
+
 ** Org
 *** Keyboard shortcuts
+
+Reload configuration file.
 
 #+BEGIN_SRC emacs-lisp
   (global-set-key (kbd "C-c i")
