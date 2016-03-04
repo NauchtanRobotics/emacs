@@ -204,7 +204,9 @@ Helm makes it easy to complete various things.
             helm-M-x-requires-pattern nil
             helm-ff-skip-boring-files t
             helm-split-window-in-side-p t
-            helm-full-frame t)
+            helm-full-frame t
+            helm-buffer-max-length 50
+            )
       (helm-mode)
       (global-set-key (kbd "C-c h") 'helm-command-prefix)
       (global-unset-key (kbd "C-x c")))
