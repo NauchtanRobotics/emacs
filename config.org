@@ -516,13 +516,14 @@ Three equal sized columns for C code editing plus a narrow compilation window.
 #+BEGIN_SRC emacs-lisp
   (defun my-window-split-4 ()
     "Split the workspace into three coding windows and one compilation window."
+    "Split the workspace into three coding windows and one compilation window."
     (interactive)
     (delete-other-windows)
     (split-window-right 85)
     (other-window 1)
     (split-window-right 85)
     (other-window 1)
-    (split-window-right 85)
+    (split-window-below 65)
     (other-window 1)
     (switch-to-buffer "*compilation*" nil t)
     (my-window-toggle-dedicated)
@@ -711,6 +712,18 @@ Revert a buffer.
 
 #+BEGIN_SRC emacs-lisp
   (use-package julia-mode)
+#+END_SRC
+
+*** BATS: Bash Automated Testing System
+
+#+BEGIN_SRC emacs-lisp
+
+  (use-package bats-mode
+    :init
+    (progn
+      (add-to-list 'auto-mode-alist '("\\.bats$" . bats-mode))
+      ))
+
 #+END_SRC
 
 *** COMMENT Writing
