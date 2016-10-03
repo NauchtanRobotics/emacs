@@ -665,9 +665,9 @@ Revert a buffer.
   (use-package json-snatcher
     :ensure t
     :pin "marmalade")
-  (use-package json-reformat
-    :ensure t
-    :pin "marmalade")
+  ;; (use-package json-reformat
+  ;;   :ensure t
+  ;;   :pin "marmalade")
   (use-package json-mode
     :ensure t
     :pin "marmalade"
