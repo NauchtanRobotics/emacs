@@ -251,10 +251,13 @@ Lazy people like me never want to type "yes" when "y" will suffice.
 #+BEGIN_SRC emacs-lisp
   (use-package color-theme :ensure t)
 
+  ;; Note, use the following in the scratch buffer to test fonts.
+  ;; (set-frame-font "Inconsolata-14" nil t)
+
   (eval-after-load 'color-theme
     '(progn
-       (set-default-font "Consolas 8")
-       (add-to-list 'default-frame-alist '(font . "Consolas 8"))
+       (set-default-font "Hack")
+       (add-to-list 'default-frame-alist '(font . "Hack 9"))
        ;; (set-face-attribute 'default nil :height 80)
        (add-to-list 'custom-theme-load-path (concat my-dotfiles-directory "themes"))
        (load-theme 'zenburn t)))
@@ -604,44 +607,78 @@ Revert a buffer.
 #+END_SRC
 
 ** Coding
-*** C
+*** C/C++
+
+The irony package is responsible for code completion using libclang.
 
 #+BEGIN_SRC emacs-lisp
-    (defun my-c-mode-common-hook ()
-      "Configure C mode according to my tastes."
-      (interactive)
-      ;(helm-gtags-mode)
-      (hs-minor-mode t)
-      (c-set-style "bsd")
-      (c-set-offset 'case-label '+)
-      (c-set-offset 'statement-cont '0)
-      (c-set-offset 'cpp-define-intro '0)
-      (c-set-offset 'inextern-lang '0)
-      (c-set-offset 'arglist-close '0)
-      (setq c-basic-offset 4
-            tab-width 4
-            indent-tabs-mode nil
-            fill-column 80
-            c-block-comment-prefix "*  "
-            c-doc-comment-style '((java-mode . javadoc) (pike-mode . autodoc) (c-mode . javadoc))
-            c-doc-comment-style 'javadoc)
-      (local-set-key (kbd "C-c o")       'ff-find-other-file)
-      (local-set-key (kbd "C-c <right>") 'hs-show-block)
-      (local-set-key (kbd "C-c <left>")  'hs-hide-block)
-      (local-set-key (kbd "C-c C-k")     'hs-toggle-hiding)
-      (local-set-key (kbd "C-c <up>")    'hs-hide-all)
-      (local-set-key (kbd "C-c <down>")  'hs-show-all)
-      (local-set-key (kbd "C-j")         'newline)
-      (local-set-key (kbd "C-d")         'delete-forward-char)
+  (use-package irony
+    :ensure t
+    )
 
-      ;; The C-M-a keypress is being swallowed by Windows, VirtualBox, or
-      ;; Archlinux and never makes it as far as Emacs. Assign another
-      ;; chord.
-      (local-set-key (kbd "C-M-S-e")     'c-beginning-of-defun)
-      (local-set-key (kbd "C-M-e")       'c-end-of-defun)
-      )
+  (add-hook 'c++-mode-hook 'irony-mode)
+  (add-hook 'c-mode-hook 'irony-mode)
 
-    (add-hook 'c-mode-common-hook 'my-c-mode-common-hook)
+  ;; replace the `completion-at-point' and `complete-symbol' bindings in
+  ;; irony-mode's buffers by irony-mode's function
+  (defun my-irony-mode-hook ()
+    (define-key irony-mode-map [remap completion-at-point]
+      'irony-completion-at-point-async)
+    ;; (define-key irony-mode-map [remap complete-symbol]
+    ;;   'irony-completion-at-point-async)
+    )
+  (add-hook 'irony-mode-hook 'my-irony-mode-hook)
+#+END_SRC
+
+company-mode, modular in-buffer completion framework for emacs. The name stands
+for "complete anything". It uses pluggable back-ends and front-ends to retrieve
+and display completion candidates.
+
+#+BEGIN_SRC emacs-lisp
+  (use-package company
+    :ensure t :pin melpa
+    )
+
+  ;; (add-hook 'after-init-hook 'global-company-mode)
+#+END_SRC
+
+#+BEGIN_SRC emacs-lisp
+  (defun my-c-mode-common-hook ()
+    "Configure C mode according to my tastes."
+    (interactive)
+    ;(helm-gtags-mode)
+    (hs-minor-mode t)
+    (company-mode t)
+    (c-set-style "bsd")
+    (c-set-offset 'case-label '+)
+    (c-set-offset 'statement-cont '0)
+    (c-set-offset 'cpp-define-intro '0)
+    (c-set-offset 'inextern-lang '0)
+    (c-set-offset 'arglist-close '0)
+    (setq c-basic-offset 4
+          tab-width 4
+          indent-tabs-mode nil
+          fill-column 80
+          c-block-comment-prefix "*  "
+          c-doc-comment-style '((java-mode . javadoc) (pike-mode . autodoc) (c-mode . javadoc))
+          c-doc-comment-style 'javadoc)
+    (local-set-key (kbd "C-c o")       'ff-find-other-file)
+    (local-set-key (kbd "C-c <right>") 'hs-show-block)
+    (local-set-key (kbd "C-c <left>")  'hs-hide-block)
+    (local-set-key (kbd "C-c C-k")     'hs-toggle-hiding)
+    (local-set-key (kbd "C-c <up>")    'hs-hide-all)
+    (local-set-key (kbd "C-c <down>")  'hs-show-all)
+    (local-set-key (kbd "C-j")         'newline)
+    (local-set-key (kbd "C-d")         'delete-forward-char)
+
+    ;; The C-M-a keypress is being swallowed by Windows, VirtualBox, or
+    ;; Archlinux and never makes it as far as Emacs. Assign another
+    ;; chord.
+    (local-set-key (kbd "C-M-S-e")     'c-beginning-of-defun)
+    (local-set-key (kbd "C-M-e")       'c-end-of-defun)
+    )
+
+  (add-hook 'c-mode-common-hook 'my-c-mode-common-hook)
 #+END_SRC
 
 *** Go

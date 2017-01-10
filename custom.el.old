@@ -3,10 +3,11 @@
  ;; If you edit it by hand, you could mess it up, so be careful.
  ;; Your init file should contain only one such instance.
  ;; If there is more than one, they won't work right.
- '(custom-safe-themes (quote ("108684e030dded882ff42b542ac0ba40c45e74a7f109c90a90f846c401c7248e" "97a81d38cc46f745685139c2296ae22ecb60ac34d46cdeab304b5b3af0111103" "d2edb8b856389efc104d4819e24fd0ae6ce4d0bfec7c09d557ec95dcbebb0d79" "42ace3c1feb1def4af0e18a23cd74f01e2bf5b17" "487525b401a8d44ac7581efa566c1292d41a4bee" "8371182886f3a175cf5207372b07733d26ddc7c6" "1f392dc4316da3e648c6dc0f4aad1a87d4be556c" "3c221cf1a0a4172917772c71da5c4d5e1d4f98c4" default))))
+ '(custom-safe-themes (quote ("c5a221424b742c0263a1ea8eb64c08318a0eeeef83e851281e4f6610595bcd3b" "840cd77951afd2daf885a373b22c6f23c849476c9b7b22846ba59b1fd9d76d4d" "108684e030dded882ff42b542ac0ba40c45e74a7f109c90a90f846c401c7248e" default)))
+ '(org-tags-column -120))
 (custom-set-faces
  ;; custom-set-faces was added by Custom.
  ;; If you edit it by hand, you could mess it up, so be careful.
  ;; Your init file should contain only one such instance.
  ;; If there is more than one, they won't work right.
- '(default ((t (:inherit nil :stipple nil :background "#3f3f3f" :foreground "#dcdccc" :inverse-video nil :box nil :strike-through nil :overline nil :underline nil :slant normal :weight normal :height 95 :width normal :foundry "microsoft" :family "Consolas")))))
+ '(default ((t (:inherit nil :stipple nil :background "#3f3f3f" :foreground "#dcdccc" :inverse-video nil :box nil :strike-through nil :overline nil :underline nil :slant normal :weight normal :height 110 :width normal :foundry "microsoft" :family "Consolas")))))
