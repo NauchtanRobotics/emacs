@@ -636,8 +636,12 @@ and display completion candidates.
 
 #+BEGIN_SRC emacs-lisp
   (use-package company
-    :ensure t :pin melpa
+    :ensure t
+    :pin melpa
+    :bind (("C-i" . company-complete))
     )
+
+
 
   ;; (add-hook 'after-init-hook 'global-company-mode)
 #+END_SRC
