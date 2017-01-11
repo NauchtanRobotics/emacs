@@ -638,7 +638,7 @@ and display completion candidates.
   (use-package company
     :ensure t
     :pin melpa
-    :bind (("C-i" . company-complete))
+    :bind (("C-c C-i" . company-complete))
     )
 
 
