@@ -613,22 +613,36 @@ Revert a buffer.
 The irony package is responsible for code completion using libclang.
 
 #+BEGIN_SRC emacs-lisp
-  (use-package irony
-    :ensure t
-    )
-
-  (add-hook 'c++-mode-hook 'irony-mode)
-  (add-hook 'c-mode-hook 'irony-mode)
-
-  ;; replace the `completion-at-point' and `complete-symbol' bindings in
-  ;; irony-mode's buffers by irony-mode's function
   (defun my-irony-mode-hook ()
     (define-key irony-mode-map [remap completion-at-point]
       'irony-completion-at-point-async)
-    ;; (define-key irony-mode-map [remap complete-symbol]
-    ;;   'irony-completion-at-point-async)
-    )
-  (add-hook 'irony-mode-hook 'my-irony-mode-hook)
+    (define-key irony-mode-map [remap complete-symbol]
+      'irony-completion-at-point-async))
+
+  (use-package irony
+    :ensure t
+    :config
+    (progn
+      (use-package company-irony
+        :ensure t
+        :config
+        (add-to-list 'company-backends 'company-irony))
+      (add-hook 'c++-mode-hook 'irony-mode)
+      (add-hook 'c-mode-hook 'irony-mode)
+      (add-hook 'irony-mode-hook 'my-irony-mode-hook)
+      (add-hook 'irony-mode-hook 'company-irony-setup-begin-commands)
+      (add-hook 'irony-mode-hook 'irony-cdb-autosetup-compile-options)))
+
+  ;; ;; replace the `completion-at-point' and `complete-symbol' bindings in
+  ;; ;; irony-mode's buffers by irony-mode's function
+  ;; (defun my-irony-mode-hook ()
+  ;;   (define-key irony-mode-map [remap completion-at-point]
+  ;;     'irony-completion-at-point-async)
+  ;;   (define-key irony-mode-map [remap complete-symbol]
+  ;;     'irony-completion-at-point-async)
+  ;;   )
+  ;; (add-hook 'irony-mode-hook 'my-irony-mode-hook)
+  ;;(add-hook 'irony-mode-hook 'irony-cdb-autosetup-compile-options)
 #+END_SRC
 
 company-mode, modular in-buffer completion framework for emacs. The name stands
