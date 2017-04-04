@@ -1,6 +1,6 @@
 # -*- mode: snippet -*-
 # name: C module
-# key: c_module
+# key: c-file-module
 # --
 /**
  * @file ${1:`(file-name-nondirectory buffer-file-name)`}
@@ -29,12 +29,11 @@ struct ${4:`(replace-regexp-in-string "-" "_" (file-name-sans-extension (file-na
 /**
  * This function implements @ref module_init_t, it initialises...
  *
- * @retval =1
- *     Initialisation is complete, @p ctx is modified to point at the context
- *     object for this module.
+ * @retval >0
+ *     Initialisation is pending, this function must be called again.
  * @retval =0
- *     Initialisation is pending awaiting initialisation of another module, @p
- *     ctx is not modified. This function must be called again.
+ *     Initialisation complete, @p ctx is modified to point at the context
+ *     object for this module.
  * @retval <0
  *     An error occurred.
  * @param[out] ctx ($4_ctx_t *)
@@ -100,14 +99,13 @@ static int $4_init(void **mod_ctx, module_data_t md)
 {
     static struct $4_ctx_s ctx;
 
-    int ret = 0;
+    int ret = RET(CU_MODULE_DEPENDENCY);
 
     do
     {
         /* Module successfully initialised. */
         *mod_ctx = &ctx;
-        ret = 1;
-
+        ret = 0;
     }
     while (0);
 
