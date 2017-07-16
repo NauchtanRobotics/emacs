@@ -302,6 +302,11 @@ shrink-whitespace is a DWIM whitespace removal tool.
     :bind (("C-c C-d" . shrink-whitespace)))
 #+END_SRC
 
+*** Exiting
+
+#+BEGIN_SRC emacs-lisp
+(setq confirm-kill-emacs 'y-or-n-p)
+#+END_SRC
 
 *** Clipboard
 
@@ -518,21 +523,41 @@ Integrate /GNU Global/ with helm.
 Three equal sized columns for C code editing plus a narrow compilation window.
 
 #+BEGIN_SRC emacs-lisp
-  (defun my-window-split-4 ()
-    "Split the workspace into three coding windows and one compilation window."
-    "Split the workspace into three coding windows and one compilation window."
-    (interactive)
-    (delete-other-windows)
-    (split-window-right 85)
-    (other-window 1)
-    (split-window-right 85)
-    (other-window 1)
-    (split-window-below 65)
-    (other-window 1)
-    (switch-to-buffer "*compilation*" nil t)
-    (my-window-toggle-dedicated)
-    )
-  (global-set-key (kbd "C-c w 4") 'my-window-split-4)
+    (defun my-window-split-4 ()
+      "Split the workspace into three coding windows and one compilation window."
+      "Split the workspace into three coding windows and one compilation window."
+      (interactive)
+      (delete-other-windows)
+      (split-window-right 85)
+      (other-window 1)
+      (split-window-right 85)
+      (other-window 1)
+      (split-window-below 65)
+      (other-window 1)
+      (switch-to-buffer "*compilation*" nil t)
+      (my-window-toggle-dedicated)
+      )
+
+    (defun my-window-split-6 ()
+      "Split the workspace into three coding windows and one compilation window."
+      "Split the workspace into three coding windows and one compilation window."
+      (interactive)
+      (delete-other-windows)
+      (split-window-right 85)
+      (other-window 1)
+      (split-window-right 85)
+      (other-window 1)
+      (split-window-right 85)
+      (other-window 1)
+      (split-window-right 85)
+      (other-window 1)
+      (split-window-below 65)
+      (other-window 1)
+      (switch-to-buffer "*compilation*" nil t)
+      (my-window-toggle-dedicated)
+      )
+    (global-set-key (kbd "C-c w 4") 'my-window-split-4)
+    (global-set-key (kbd "C-c w 6") 'my-window-split-6)
 #+END_SRC
 
 *** Dedicated window
@@ -590,6 +615,17 @@ Revert a buffer.
     )
 #+END_SRC
 
+*** Smart Mode Line
+
+#+BEGIN_SRC emacs-lisp
+    (use-package smart-mode-line
+        :ensure t
+        :pin melpa
+        :init
+        (sml/setup)
+        )
+#+END_SRC
+
 ** Revision Control
 *** Magit
 
@@ -612,37 +648,39 @@ Revert a buffer.
 
 The irony package is responsible for code completion using libclang.
 
+Note, this package hangs a lot so I'm disabling it.
+
 #+BEGIN_SRC emacs-lisp
-  (defun my-irony-mode-hook ()
-    (define-key irony-mode-map [remap completion-at-point]
-      'irony-completion-at-point-async)
-    (define-key irony-mode-map [remap complete-symbol]
-      'irony-completion-at-point-async))
-
-  (use-package irony
-    :ensure t
-    :config
-    (progn
-      (use-package company-irony
-        :ensure t
-        :config
-        (add-to-list 'company-backends 'company-irony))
-      (add-hook 'c++-mode-hook 'irony-mode)
-      (add-hook 'c-mode-hook 'irony-mode)
-      (add-hook 'irony-mode-hook 'my-irony-mode-hook)
-      (add-hook 'irony-mode-hook 'company-irony-setup-begin-commands)
-      (add-hook 'irony-mode-hook 'irony-cdb-autosetup-compile-options)))
-
-  ;; ;; replace the `completion-at-point' and `complete-symbol' bindings in
-  ;; ;; irony-mode's buffers by irony-mode's function
   ;; (defun my-irony-mode-hook ()
   ;;   (define-key irony-mode-map [remap completion-at-point]
   ;;     'irony-completion-at-point-async)
   ;;   (define-key irony-mode-map [remap complete-symbol]
-  ;;     'irony-completion-at-point-async)
-  ;;   )
-  ;; (add-hook 'irony-mode-hook 'my-irony-mode-hook)
-  ;;(add-hook 'irony-mode-hook 'irony-cdb-autosetup-compile-options)
+  ;;     'irony-completion-at-point-async))
+
+  ;; (use-package irony
+  ;;   :ensure t
+  ;;   :config
+  ;;   (progn
+  ;;     (use-package company-irony
+  ;;       :ensure t
+  ;;       :config
+  ;;       (add-to-list 'company-backends 'company-irony))
+  ;;     (add-hook 'c++-mode-hook 'irony-mode)
+  ;;     (add-hook 'c-mode-hook 'irony-mode)
+  ;;     (add-hook 'irony-mode-hook 'my-irony-mode-hook)
+  ;;     (add-hook 'irony-mode-hook 'company-irony-setup-begin-commands)
+  ;;     (add-hook 'irony-mode-hook 'irony-cdb-autosetup-compile-options)))
+
+  ;; ;; ;; replace the `completion-at-point' and `complete-symbol' bindings in
+  ;; ;; ;; irony-mode's buffers by irony-mode's function
+  ;; ;; (defun my-irony-mode-hook ()
+  ;; ;;   (define-key irony-mode-map [remap completion-at-point]
+  ;; ;;     'irony-completion-at-point-async)
+  ;; ;;   (define-key irony-mode-map [remap complete-symbol]
+  ;; ;;     'irony-completion-at-point-async)
+  ;; ;;   )
+  ;; ;; (add-hook 'irony-mode-hook 'my-irony-mode-hook)
+  ;; ;;(add-hook 'irony-mode-hook 'irony-cdb-autosetup-compile-options)
 #+END_SRC
 
 company-mode, modular in-buffer completion framework for emacs. The name stands
@@ -667,7 +705,7 @@ and display completion candidates.
     (interactive)
     ;(helm-gtags-mode)
     (hs-minor-mode t)
-    (company-mode t)
+    ;(company-mode t)
     (c-set-style "bsd")
     (c-set-offset 'case-label '+)
     (c-set-offset 'statement-cont '0)
