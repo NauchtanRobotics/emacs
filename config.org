@@ -626,6 +626,17 @@ Revert a buffer.
         )
 #+END_SRC
 
+*** NeoTree
+
+A Emacs tree plugin like NerdTree for Vim.
+
+#+BEGIN_SRC emacs-lisp
+    (use-package neotree
+      :ensure t
+      :pin melpa
+      )
+#+END_SRC
+
 ** Revision Control
 *** Magit
 
@@ -692,6 +703,9 @@ and display completion candidates.
     :ensure t
     :pin melpa
     :bind (("C-c C-i" . company-complete))
+    :init
+    (setq company-dabbrev-downcase 0)
+    (setq company-idle-delay nil)
     )
 
 
@@ -739,6 +753,114 @@ and display completion candidates.
 #+END_SRC
 
 *** Go
+*** Rust
+
+#+BEGIN_SRC emacs-lisp
+  (use-package rust-mode
+    :ensure t
+    :init (progn
+            (add-hook 'rust-mode-hook 'cargo-minor-mode)
+            (add-hook 'toml-mode-hook 'cargo-minor-mode)
+            ;; (add-to-list 'auto-mode-alist '("\\.rs\\'" . rust-mode))
+
+            (defun my-rust-mode-hook()
+              (setq compile-command "cargo run")
+              )
+            (add-hook 'rust-mode-hook 'my-rust-mode-hook)
+            )
+    ;; :bind (("C-c C-c" . compile))
+    )
+#+END_SRC
+
+**** rustfmt
+
+Disable ~rustfmt~ save-hook until it is closer to no-op on official Rust code.
+
+#+BEGIN_SRC emacs-lisp
+  (setq rust-format-on-save nil)
+#+END_SRC
+
+**** Ensure Cargo
+
+Ensure that Cargo is installed.
+
+#+BEGIN_SRC emacs-lisp
+  (use-package cargo :ensure t)
+#+END_SRC
+
+**** Racer
+
+Code completion for Rust.
+
+#+BEGIN_SRC emacs-lisp
+    (use-package racer
+      :ensure t
+      :init (progn
+              (add-hook 'rust-mode-hook #'racer-mode)
+              (add-hook 'racer-mode-hook #'eldoc-mode)
+              (add-hook 'racer-mode-hook #'company-mode)
+              (define-key rust-mode-map (kbd "TAB") #'company-indent-or-complete-common)
+              ))
+#+END_SRC
+
+Set up keybinding for ~racer-describe~.
+
+#+BEGIN_SRC emacs-lisp
+  (define-key rust-mode-map (kbd "C-c d") 'racer-describe)
+#+END_SRC
+
+# #+BEGIN_SRC emacs-lisp
+#   (use-package rust-mode
+#     :ensure t
+#     :defer t
+#     :init
+#     (require 'rust-mode)
+#     ;; (global-company-mode)
+#     (add-to-list 'auto-mode-alist '("\\.rs\\'" . rust-mode))
+#     :config
+#     (defun my-rust-mode-hook()
+#       (setq compile-command "cargo run")
+#       )
+#     ;; (use-package company-racer)
+#     ;; (use-package flycheck-rust)
+#     ;; (use-package racer
+#     ;;   :ensure t
+#     ;;   :defer t
+#     ;;   :init
+#     ;;   (setq racer-rust-src-path (concat (getenv "HOME")
+#     ;;                                     "/Repos/External/rustc-1.3.0/src/"))
+#     ;;   (setq racer-cmd (concat (getenv "HOME")
+#     ;;                           "/Repos/External/racer/target/release/racer"))
+#     ;;   :config
+#     ;;   (define-key rust-mode-map (kbd "M-\"") #'racer-find-definition)
+#     ;;   )
+#     (add-hook 'rust-mode-hook 'my-rust-mode-hook)
+#     :bind (("C-c C-c" . compile))
+#     )
+# #+END_SRC
+
+**** Set up Yasnippet
+
+#+BEGIN_SRC emacs-lisp
+  (add-hook 'rust-mode-hook #'yas-minor-mode)
+#+END_SRC
+
+**** Backtraces
+
+Turn on backtraces.
+
+#+BEGIN_SRC emacs-lisp
+  (setenv "RUST_BACKTRACE" "1")
+#+END_SRC
+
+**** TOML
+
+#+BEGIN_SRC emacs-lisp
+      (use-package toml-mode
+        :ensure t
+        :pin melpa)
+#+END_SRC
+
 *** Javascript
 
 #+BEGIN_SRC emacs-lisp
