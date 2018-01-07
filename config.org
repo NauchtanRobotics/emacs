@@ -655,6 +655,17 @@ A Emacs tree plugin like NerdTree for Vim.
 #+END_SRC
 
 ** Coding
+*** Clang Format
+
+#+BEGIN_SRC emacs-lisp
+    (use-package clang-format
+      :init
+      (setq clang-format-executable "clang-format-5.0")
+      :bind (("C-c f r" . clang-format-region)
+              ("C-c f f" . clang-format-buffer))
+      )
+#+END_SRC
+
 *** C/C++
 
 The irony package is responsible for code completion using libclang.
