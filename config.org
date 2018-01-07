@@ -905,6 +905,12 @@ Turn on backtraces.
 
 #+END_SRC
 
+*** YAML
+
+#+BEGIN_SRC emacs-lisp
+      (use-package yaml-mode)
+#+END_SRC
+
 *** Textile
 
 #+BEGIN_SRC emacs-lisp
